@@ -1,12 +1,19 @@
 #!/usr/bin/env node
-for (let n = 1; n <= 20; n++) {
+
+let fizzbuzz = (n) => {
   if (n % 15 == 0) {
-    console.log("Fizzbuzz");
+    return "Fizzbuzz";
   } else if (n % 3 == 0) {
-    console.log("Fizz");
+    return "Fizz";
   } else if (n % 5 == 0) {
-    console.log("Buzz");
+    return "Buzz";
   } else {
-    console.log(n);
+    return n;
   }
+};
+
+for (let n = 1; n <= 20; n++) {
+  console.log(fizzbuzz(n));
 }
+
+module.exports = fizzbuzz;
