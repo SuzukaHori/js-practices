@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
- const fizzbuzz = (n) => {
+const fizzbuzz = (n) => {
   if (n % 15 === 0) {
     return "Fizzbuzz";
   } else if (n % 3 === 0) {
