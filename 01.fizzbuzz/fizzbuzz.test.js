@@ -1,4 +1,4 @@
-const fizzbuzz = require('./fizzbuzz.cjs');
+import fizzbuzz from './fizzbuzz.js';
 
 test('3の倍数の時Fizzを返す', () => {
   expect(fizzbuzz(3)).toBe("Fizz");

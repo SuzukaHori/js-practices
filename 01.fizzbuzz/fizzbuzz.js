@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-let fizzbuzz = (n) => {
+ const fizzbuzz = (n) => {
   if (n % 15 === 0) {
     return "Fizzbuzz";
   } else if (n % 3 === 0) {
@@ -16,4 +16,4 @@ for (let n = 1; n <= 20; n++) {
   console.log(fizzbuzz(n));
 }
 
-module.exports = fizzbuzz;
+export default fizzbuzz;
