@@ -2,7 +2,7 @@ import sqlite3 from "sqlite3";
 import timers from "timers/promises";
 const db = new sqlite3.Database(":memory:");
 
-const insert = (sql) =>
+const runSqlToInsert = (sql) =>
   new Promise((resolve, reject) => {
     db.run(sql, function (error) {
       if (error) {
@@ -33,8 +33,10 @@ new Promise((resolve) => {
     () => resolve()
   );
 })
-  .then(() => insert('INSERT INTO books(title) VALUES("チェリー本")'))
-  .then(() => insert('INSERT INTO books(title) VALUES("ブルーベリー本")'))
+  .then(() => runSqlToInsert('INSERT INTO books(title) VALUES("チェリー本")'))
+  .then(() =>
+    runSqlToInsert('INSERT INTO books(title) VALUES("ブルーベリー本")')
+  )
   .then(() => displayAll("SELECT * FROM books"))
   .then(() => db.run("drop table if exists books"));
 
@@ -47,9 +49,11 @@ new Promise((resolve) =>
     () => resolve()
   )
 )
-  .then(() => insert("INSERT INTO books"))
+  .then(() => runSqlToInsert("INSERT INTO books"))
   .catch((error) => console.log(error.message))
-  .then(() => insert('INSERT INTO books(title) VALUES("ブルーベリー本")'))
+  .then(() =>
+    runSqlToInsert('INSERT INTO books(title) VALUES("ブルーベリー本")')
+  )
   .then(() => displayAll("SELECT * FROM book"))
   .catch((error) => console.log(error.message))
   .then(() => db.run("drop table if exists books"));
