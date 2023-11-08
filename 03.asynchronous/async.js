@@ -1,4 +1,5 @@
 import sqlite3 from "sqlite3";
+import timers from "timers/promises";
 const db = new sqlite3.Database(":memory:");
 
 const runSqlToInsert = (sql) =>
@@ -50,3 +51,23 @@ async function sequentialStart() {
 }
 
 sequentialStart();
+await timers.setTimeout(100);
+
+// エラーあり
+async function errorSequential() {
+  await createTable();
+  try {
+    await runSqlToInsert("INSERT INTO books");
+  } catch (error) {
+    console.log(error.message);
+  }
+  await runSqlToInsert('INSERT INTO books(title) VALUES("ブルーベリー本")');
+  try {
+    await displayAll("SELECT * FROM book");
+  } catch (error) {
+    console.log(error.message);
+  }
+  db.run("drop table if exists books");
+}
+
+errorSequential();
