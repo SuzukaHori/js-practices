@@ -3,7 +3,7 @@ import { runSql, runSqlToInsert, displayAll } from "./function.js";
 
 //エラーなし
 
-async function sequentialStart() {
+async function processSuccessfully() {
   await runSql(
     "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
   );
@@ -19,13 +19,13 @@ async function sequentialStart() {
   runSql("drop table if exists books");
 }
 
-sequentialStart();
+processSuccessfully();
 
 await timers.setTimeout(100);
 
 // // エラーあり
 
-async function errorSequential() {
+async function processWithErrors() {
   await runSql(
     "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
   );
@@ -47,4 +47,4 @@ async function errorSequential() {
   }
 }
 
-errorSequential();
+processWithErrors();

@@ -43,7 +43,8 @@ db.run("DROP TABLE IF EXISTS books", () => {
             } else {
               console.log(`ID${this.lastID}が追加されました`);
             }
-            db.all("SELECT * FROM book", (error, rows) => { //ここでエラー発生
+            db.all("SELECT * FROM book", (error, rows) => {
+              //ここでエラー発生
               if (error) {
                 console.log(error.message);
               } else {
