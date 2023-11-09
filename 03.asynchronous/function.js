@@ -18,7 +18,7 @@ const runSqlToInsert = (sql) =>
       if (error) {
         reject(error);
       } else {
-        resolve(`ID${this.lastID}が挿入されました`);
+        resolve(`ID${this.lastID}が追加されました`);
       }
     });
   });

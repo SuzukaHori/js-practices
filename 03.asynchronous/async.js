@@ -1,13 +1,11 @@
 import timers from "timers/promises";
-import { runSql } from "./function.js";
-import { runSqlToInsert } from "./function.js";
-import { displayAll } from "./function.js";
+import { runSql, runSqlToInsert, displayAll } from "./function.js";
 
 //エラーなし
 
 async function sequentialStart() {
   await runSql(
-    "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE)"
+    "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
   );
   let result = await runSqlToInsert(
     'INSERT INTO books(title) VALUES("チェリー本")'
@@ -26,11 +24,15 @@ sequentialStart();
 await timers.setTimeout(100);
 
 // // エラーあり
+
 async function errorSequential() {
   await runSql(
-    "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE)"
+    "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
   );
-  await runSqlToInsert('INSERT INTO books(title) VALUES("チェリー本")');
+  let result = await runSqlToInsert(
+    'INSERT INTO books(title) VALUES("チェリー本")'
+  );
+  console.log(result);
   try {
     await runSqlToInsert('INSERT INTO books(title) VALUES("チェリー本")');
   } catch (error) {
@@ -40,8 +42,9 @@ async function errorSequential() {
     await displayAll("SELECT * FROM book");
   } catch (error) {
     console.log(error.message);
+  } finally {
+    runSql("drop table if exists books");
   }
-  runSql("drop table if exists books");
 }
 
 errorSequential();

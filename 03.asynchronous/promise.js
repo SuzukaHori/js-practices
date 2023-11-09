@@ -1,11 +1,9 @@
 import timers from "timers/promises";
-import { runSql } from "./function.js";
-import { runSqlToInsert } from "./function.js";
-import { displayAll } from "./function.js";
+import { runSql, runSqlToInsert, displayAll } from "./function.js";
 
 //エラーなし
 runSql(
-  "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE)"
+  "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE NOT NULL)"
 )
   .then(() => runSqlToInsert('INSERT INTO books(title) VALUES("チェリー本")'))
   .then((result) => {
@@ -22,7 +20,7 @@ await timers.setTimeout(100);
 
 // //エラーあり
 runSql(
-  "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE)"
+  "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE NOT NULL)"
 )
   .then(() =>
     runSqlToInsert('INSERT INTO books(title) VALUES("ブルーベリー本")')
@@ -34,4 +32,4 @@ runSql(
   .catch((error) => console.log(error.message))
   .then(() => displayAll("SELECT * FROM book"))
   .catch((error) => console.log(error.message))
-  .then(() => runSql("drop table if exists books"));
+  .finally(() => runSql("drop table if exists books"));
