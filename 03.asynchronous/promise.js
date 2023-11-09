@@ -1,6 +1,18 @@
-import sqlite3 from "sqlite3";
 import timers from "timers/promises";
+import sqlite3 from "sqlite3";
+
 const db = new sqlite3.Database(":memory:");
+
+const runSql = (sql) =>
+  new Promise((resolve, reject) => {
+    db.run(sql, (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
 
 const runSqlToInsert = (sql) =>
   new Promise((resolve, reject) => {
@@ -9,7 +21,7 @@ const runSqlToInsert = (sql) =>
         reject(error);
       } else {
         console.log(`ID${this.lastID}が挿入されました`);
-        resolve();
+        resolve(`ID${this.lastID}が挿入されました`);
       }
     });
   });
@@ -27,12 +39,9 @@ const displayAll = (sql) =>
   });
 
 //エラーなし
-new Promise((resolve) => {
-  db.run(
-    "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL)",
-    () => resolve()
-  );
-})
+runSql(
+  "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE)"
+)
   .then(() => runSqlToInsert('INSERT INTO books(title) VALUES("チェリー本")'))
   .then(() =>
     runSqlToInsert('INSERT INTO books(title) VALUES("ブルーベリー本")')
@@ -43,17 +52,16 @@ new Promise((resolve) => {
 await timers.setTimeout(100);
 
 //エラーあり
-new Promise((resolve) =>
-  db.run(
-    "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL)",
-    () => resolve()
-  )
+runSql(
+  "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE)"
 )
-  .then(() => runSqlToInsert("INSERT INTO books"))
-  .catch((error) => console.log(error.message))
   .then(() =>
     runSqlToInsert('INSERT INTO books(title) VALUES("ブルーベリー本")')
   )
+  .then(() =>
+    runSqlToInsert('INSERT INTO books(title) VALUES("ブルーベリー本")')
+  )
+  .catch((error) => console.log(error.message))
   .then(() => displayAll("SELECT * FROM book"))
   .catch((error) => console.log(error.message))
-  .then(() => db.run("drop table if exists books"));
+  .then(() => runSql("drop table if exists books"));

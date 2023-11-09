@@ -2,6 +2,17 @@ import sqlite3 from "sqlite3";
 import timers from "timers/promises";
 const db = new sqlite3.Database(":memory:");
 
+const runSql = (sql) =>
+  new Promise((resolve, reject) => {
+    db.run(sql, (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
+
 const runSqlToInsert = (sql) =>
   new Promise((resolve, reject) => {
     db.run(sql, function (error) {
@@ -9,7 +20,7 @@ const runSqlToInsert = (sql) =>
         reject(error);
       } else {
         console.log(`ID${this.lastID}が挿入されました`);
-        resolve();
+        resolve(`ID${this.lastID}が挿入されました`);
       }
     });
   });
@@ -26,48 +37,39 @@ const displayAll = (sql) =>
     });
   });
 
-const createTable = () =>
-  new Promise((resolve, reject) => {
-    db.run(
-      "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL)",
-      (error) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve();
-        }
-      }
-    );
-  });
-
 //エラーなし
 
 async function sequentialStart() {
-  await createTable();
+  await runSql(
+    "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE)"
+  );
   await runSqlToInsert('INSERT INTO books(title) VALUES("チェリー本")');
   await runSqlToInsert('INSERT INTO books(title) VALUES("ブルーベリー本")');
   await displayAll("SELECT * FROM books");
-  db.run("drop table if exists books");
+  runSql("drop table if exists books");
 }
 
 sequentialStart();
+
 await timers.setTimeout(100);
 
 // エラーあり
 async function errorSequential() {
-  await createTable();
+  await runSql(
+    "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE)"
+  );
+  await runSqlToInsert('INSERT INTO books(title) VALUES("チェリー本")');
   try {
-    await runSqlToInsert("INSERT INTO books");
+    await runSqlToInsert('INSERT INTO books(title) VALUES("チェリー本")');
   } catch (error) {
     console.log(error.message);
   }
-  await runSqlToInsert('INSERT INTO books(title) VALUES("ブルーベリー本")');
   try {
     await displayAll("SELECT * FROM book");
   } catch (error) {
     console.log(error.message);
   }
-  db.run("drop table if exists books");
+  runSql("drop table if exists books");
 }
 
 errorSequential();
