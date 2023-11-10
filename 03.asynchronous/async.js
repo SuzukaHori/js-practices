@@ -4,8 +4,7 @@ import { runSql, runSqlToInsert, displayAll } from "./function.js";
 
 const db = new sqlite3.Database(":memory:");
 
-//エラーなし
-
+// エラーなし
 async function processSuccessfully() {
   await runSql(
     db,
@@ -32,8 +31,7 @@ processSuccessfully();
 
 await timers.setTimeout(100);
 
-// // エラーあり
-
+// エラーあり
 async function processWithErrors() {
   await runSql(
     db,
@@ -45,7 +43,7 @@ async function processWithErrors() {
   );
   console.log(`ID${id}の要素が追加されました`);
   try {
-    await runSqlToInsert(db,  "INSERT INTO books (title) VALUES ('チェリー本')");
+    await runSqlToInsert(db, "INSERT INTO books (title) VALUES ('チェリー本')");
   } catch (error) {
     if (error.code === "SQLITE_CONSTRAINT") {
       console.error(error.message);

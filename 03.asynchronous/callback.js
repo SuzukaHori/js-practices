@@ -1,36 +1,38 @@
 import sqlite3 from "sqlite3";
 import timers from "timers/promises";
 
-//エラーなし
 const db = new sqlite3.Database(":memory:");
 
-db.run(
-  "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)",
-  () => {
-    db.run("INSERT INTO books (title) VALUES ('チェリー本')", function () {
-      console.log(`ID${this.lastID}が追加されました`);
-      db.run("INSERT INTO books (title) VALUES ('ブルーベリー本')", function () {
-        console.log(`ID${this.lastID}が追加されました`);
-        db.all("SELECT * FROM books", (_error, rows) => {
-          rows.forEach((row) => console.log(row));
-          db.run("DROP TABLE books");
-        });
-      });
-    });
-  }
-);
-
-await timers.setTimeout(100);
-
-//エラーあり
-
+//エラーなし
 db.run(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)",
   () => {
     db.run("INSERT INTO books (title) VALUES ('チェリー本')", function () {
       console.log(`ID${this.lastID}が追加されました`);
       db.run(
-        "INSERT INTO books (title) VALUES ('チェリー本')", // ここでエラー発生
+        "INSERT INTO books (title) VALUES ('ブルーベリー本')",
+        function () {
+          console.log(`ID${this.lastID}が追加されました`);
+          db.all("SELECT * FROM books", (_error, rows) => {
+            rows.forEach((row) => console.log(row));
+            db.run("DROP TABLE books");
+          });
+        }
+      );
+    });
+  }
+);
+
+await timers.setTimeout(100);
+
+// エラーあり
+db.run(
+  "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)",
+  () => {
+    db.run("INSERT INTO books (title) VALUES ('チェリー本')", function () {
+      console.log(`ID${this.lastID}が追加されました`);
+      db.run(
+        "INSERT INTO books (title) VALUES ('チェリー本')",
         function (error) {
           if (error) {
             console.error(error.message);
@@ -38,7 +40,6 @@ db.run(
             console.log(`ID${this.lastID}が追加されました`);
           }
           db.all("SELECT * FROM book", (error, rows) => {
-            //ここでエラー発生
             if (error) {
               console.error(error.message);
             } else {

@@ -4,7 +4,7 @@ import { runSql, runSqlToInsert, displayAll } from "./function.js";
 
 const db = new sqlite3.Database(":memory:");
 
-//エラーなし
+// エラーなし
 runSql(
   db,
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE NOT NULL)"
@@ -32,7 +32,7 @@ runSql(
 
 await timers.setTimeout(100);
 
-// //エラーあり
+// エラーあり
 runSql(
   db,
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE NOT NULL)"
