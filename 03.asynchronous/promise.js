@@ -47,7 +47,19 @@ runSql(
       'INSERT INTO books(title) VALUES("ブルーベリー本")'
     );
   })
-  .catch((error) => console.error(error.message))
+  .catch((error) => {
+    if (error.code === "SQLITE_CONSTRAINT") {
+      console.error(error.message);
+    } else {
+      throw error;
+    }
+  })
   .then(() => displayAll(db, "SELECT * FROM book"))
-  .catch((error) => console.error(error.message))
+  .catch((error) => {
+    if (error.code === "SQLITE_ERROR") {
+      console.error(error.message);
+    } else {
+      throw error;
+    }
+  })
   .finally(() => runSql(db, "drop table books"));
