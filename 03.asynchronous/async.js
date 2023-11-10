@@ -1,5 +1,5 @@
 import sqlite3 from "sqlite3";
-import { runSql, runSqlToInsert, displayAll } from "./function.js";
+import { runSql, runSqlToInsert, runSqlToGetAll } from "./db-helpers.js";
 
 const db = new sqlite3.Database(":memory:");
 
@@ -16,7 +16,7 @@ books.forEach(async (book) => {
   );
   console.log(`ID${id}のデータが追加されました`);
 });
-const rows = await displayAll(db, "SELECT * FROM books");
+const rows = await runSqlToGetAll(db, "SELECT * FROM books");
 rows.forEach((row) => {
   console.log(row);
 });
@@ -42,7 +42,7 @@ try {
   }
 }
 try {
-  await displayAll(db, "SELECT * FROM book");
+  await runSqlToGetAll(db, "SELECT * FROM book");
 } catch (error) {
   if (error.code === "SQLITE_ERROR") {
     console.error(error.message);

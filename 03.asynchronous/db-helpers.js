@@ -1,4 +1,4 @@
-const runSql = (db, sql) =>
+export const runSql = (db, sql) =>
   new Promise((resolve, reject) => {
     db.run(sql, (error) => {
       if (error) {
@@ -9,7 +9,7 @@ const runSql = (db, sql) =>
     });
   });
 
-const runSqlToInsert = (db, sql) =>
+export const runSqlToInsert = (db, sql) =>
   new Promise((resolve, reject) => {
     db.run(sql, function (error) {
       if (error) {
@@ -20,7 +20,7 @@ const runSqlToInsert = (db, sql) =>
     });
   });
 
-const displayAll = (db, sql) =>
+export const runSqlToGetAll = (db, sql) =>
   new Promise((resolve, reject) => {
     db.all(sql, (error, rows) => {
       if (error) {
@@ -30,5 +30,3 @@ const displayAll = (db, sql) =>
       }
     });
   });
-
-export { runSql, runSqlToInsert, displayAll };

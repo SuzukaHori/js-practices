@@ -1,6 +1,6 @@
 import sqlite3 from "sqlite3";
 import timers from "timers/promises";
-import { runSql, runSqlToInsert, displayAll } from "./function.js";
+import { runSql, runSqlToInsert, runSqlToGetAll } from "./db-helpers.js";
 
 const db = new sqlite3.Database(":memory:");
 
@@ -21,7 +21,7 @@ runSql(
   })
   .then((id) => {
     console.log(`ID${id}のデータが追加されました`);
-    return displayAll(db, "SELECT * FROM books");
+    return runSqlToGetAll(db, "SELECT * FROM books");
   })
   .then((rows) => {
     rows.forEach((row) => {
@@ -54,7 +54,7 @@ runSql(
       throw error;
     }
   })
-  .then(() => displayAll(db, "SELECT * FROM book"))
+  .then(() => runSqlToGetAll(db, "SELECT * FROM book"))
   .catch((error) => {
     if (error.code === "SQLITE_ERROR") {
       console.error(error.message);
