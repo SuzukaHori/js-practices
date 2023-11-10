@@ -14,7 +14,7 @@ books.forEach(async (book) => {
     db,
     `INSERT INTO books (title) VALUES ('${book}')`
   );
-  console.log(`ID${id}の要素が追加されました`);
+  console.log(`ID${id}のデータが追加されました`);
 });
 const rows = await displayAll(db, "SELECT * FROM books");
 rows.forEach((row) => {
@@ -31,7 +31,7 @@ const id = await runSqlToInsert(
   db,
   "INSERT INTO books (title) VALUES ('チェリー本')"
 );
-console.log(`ID${id}の要素が追加されました`);
+console.log(`ID${id}のデータが追加されました`);
 try {
   await runSqlToInsert(db, "INSERT INTO books (title) VALUES ('チェリー本')");
 } catch (error) {

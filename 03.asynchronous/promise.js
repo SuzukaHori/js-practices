@@ -13,14 +13,14 @@ runSql(
     runSqlToInsert(db, "INSERT INTO books (title) VALUES ('チェリー本')")
   )
   .then((id) => {
-    console.log(`ID${id}の要素が追加されました`);
+    console.log(`ID${id}のデータが追加されました`);
     return runSqlToInsert(
       db,
       "INSERT INTO books (title) VALUES ('ブルーベリー本')"
     );
   })
   .then((id) => {
-    console.log(`ID${id}の要素が追加されました`);
+    console.log(`ID${id}のデータが追加されました`);
     return displayAll(db, "SELECT * FROM books");
   })
   .then((rows) => {
@@ -41,7 +41,7 @@ runSql(
     runSqlToInsert(db, "INSERT INTO books (title) VALUES ('チェリー本')")
   )
   .then((id) => {
-    console.log(`ID${id}の要素が追加されました`);
+    console.log(`ID${id}のデータが追加されました`);
     return runSqlToInsert(
       db,
       "INSERT INTO books (title) VALUES ('チェリー本')"
