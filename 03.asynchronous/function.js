@@ -1,7 +1,4 @@
-import sqlite3 from "sqlite3";
-const db = new sqlite3.Database(":memory:");
-
-const runSql = (sql) =>
+const runSql = (db, sql) =>
   new Promise((resolve, reject) => {
     db.run(sql, (error) => {
       if (error) {
@@ -12,7 +9,7 @@ const runSql = (sql) =>
     });
   });
 
-const runSqlToInsert = (sql) =>
+const runSqlToInsert = (db, sql) =>
   new Promise((resolve, reject) => {
     db.run(sql, function (error) {
       if (error) {
@@ -23,7 +20,7 @@ const runSqlToInsert = (sql) =>
     });
   });
 
-const displayAll = (sql) =>
+const displayAll = (db, sql) =>
   new Promise((resolve, reject) => {
     db.all(sql, (error, rows) => {
       if (error) {
