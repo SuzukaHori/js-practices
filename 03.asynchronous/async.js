@@ -61,9 +61,8 @@ async function processWithErrors() {
     } else {
       throw error;
     }
-  } finally {
-    runSql(db, "drop table books");
   }
+  await runSql(db, "drop table books");
 }
 
 processWithErrors();

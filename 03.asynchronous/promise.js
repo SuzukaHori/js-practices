@@ -62,4 +62,4 @@ runSql(
       throw error;
     }
   })
-  .finally(() => runSql(db, "drop table books"));
+  .then(() => runSql(db, "drop table books"));
