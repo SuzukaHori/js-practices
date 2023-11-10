@@ -13,19 +13,19 @@ async function processSuccessfully() {
   );
   let id = await runSqlToInsert(
     db,
-    'INSERT INTO books(title) VALUES("チェリー本")'
+    "INSERT INTO books (title) VALUES ('チェリー本')"
   );
   console.log(`ID${id}の要素が追加されました`);
   let id2 = await runSqlToInsert(
     db,
-    'INSERT INTO books(title) VALUES("ブルーベリー本")'
+    "INSERT INTO books (title) VALUES ('ブルーベリー本')"
   );
   console.log(`ID${id2}の要素が追加されました`);
   const rows = await displayAll(db, "SELECT * FROM books");
   rows.forEach((row) => {
     console.log(row);
   });
-  await runSql(db, "drop table books");
+  await runSql(db, "DROP TABLE books");
 }
 
 processSuccessfully();
@@ -41,11 +41,11 @@ async function processWithErrors() {
   );
   let id = await runSqlToInsert(
     db,
-    'INSERT INTO books(title) VALUES("チェリー本")'
+    "INSERT INTO books (title) VALUES ('チェリー本')"
   );
   console.log(`ID${id}の要素が追加されました`);
   try {
-    await runSqlToInsert(db, 'INSERT INTO books(title) VALUES("チェリー本")');
+    await runSqlToInsert(db,  "INSERT INTO books (title) VALUES ('チェリー本')");
   } catch (error) {
     if (error.code === "SQLITE_CONSTRAINT") {
       console.error(error.message);
@@ -62,7 +62,7 @@ async function processWithErrors() {
       throw error;
     }
   }
-  await runSql(db, "drop table books");
+  await runSql(db, "DROP TABLE books");
 }
 
 processWithErrors();

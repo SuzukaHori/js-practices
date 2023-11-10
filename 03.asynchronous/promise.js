@@ -10,13 +10,13 @@ runSql(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE NOT NULL)"
 )
   .then(() =>
-    runSqlToInsert(db, 'INSERT INTO books(title) VALUES("チェリー本")')
+    runSqlToInsert(db, "INSERT INTO books (title) VALUES ('チェリー本')")
   )
   .then((id) => {
     console.log(`ID${id}の要素が追加されました`);
     return runSqlToInsert(
       db,
-      'INSERT INTO books(title) VALUES("ブルーベリー本")'
+      "INSERT INTO books (title) VALUES ('ブルーベリー本')"
     );
   })
   .then((id) => {
@@ -28,7 +28,7 @@ runSql(
       console.log(row);
     });
   })
-  .then(() => runSql(db, "drop table books"));
+  .then(() => runSql(db, "DROP TABLE books"));
 
 await timers.setTimeout(100);
 
@@ -38,13 +38,13 @@ runSql(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE NOT NULL)"
 )
   .then(() =>
-    runSqlToInsert(db, 'INSERT INTO books(title) VALUES("ブルーベリー本")')
+    runSqlToInsert(db, "INSERT INTO books (title) VALUES ('チェリー本')")
   )
   .then((id) => {
     console.log(`ID${id}の要素が追加されました`);
     return runSqlToInsert(
       db,
-      'INSERT INTO books(title) VALUES("ブルーベリー本")'
+      "INSERT INTO books (title) VALUES ('チェリー本')"
     );
   })
   .catch((error) => {
@@ -62,4 +62,4 @@ runSql(
       throw error;
     }
   })
-  .then(() => runSql(db, "drop table books"));
+  .then(() => runSql(db, "DROP TABLE books"));

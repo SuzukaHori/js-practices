@@ -7,13 +7,13 @@ const db = new sqlite3.Database(":memory:");
 db.run(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)",
   () => {
-    db.run('INSERT INTO books(title) VALUES("チェリー本")', function () {
+    db.run("INSERT INTO books (title) VALUES ('チェリー本')", function () {
       console.log(`ID${this.lastID}が追加されました`);
-      db.run('INSERT INTO books(title) VALUES("ブルーベリー本")', function () {
+      db.run("INSERT INTO books (title) VALUES ('ブルーベリー本')", function () {
         console.log(`ID${this.lastID}が追加されました`);
         db.all("SELECT * FROM books", (_error, rows) => {
           rows.forEach((row) => console.log(row));
-          db.run("drop table books");
+          db.run("DROP TABLE books");
         });
       });
     });
@@ -27,10 +27,10 @@ await timers.setTimeout(100);
 db.run(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)",
   () => {
-    db.run('INSERT INTO books(title) VALUES("ブルーベリー本")', function () {
+    db.run("INSERT INTO books (title) VALUES ('チェリー本')", function () {
       console.log(`ID${this.lastID}が追加されました`);
       db.run(
-        'INSERT INTO books(title) VALUES("ブルーベリー本")', // ここでエラー発生
+        "INSERT INTO books (title) VALUES ('チェリー本')", // ここでエラー発生
         function (error) {
           if (error) {
             console.error(error.message);
@@ -44,7 +44,7 @@ db.run(
             } else {
               rows.forEach((row) => console.log(row));
             }
-            db.run("drop table books");
+            db.run("DROP TABLE books");
           });
         }
       );
