@@ -47,12 +47,12 @@ async function processWithErrors() {
   try {
     await runSqlToInsert(db, 'INSERT INTO books(title) VALUES("チェリー本")');
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
   }
   try {
     await displayAll(db, "SELECT * FROM book");
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
   } finally {
     runSql(db, "drop table if exists books");
   }

@@ -47,7 +47,7 @@ runSql(
       'INSERT INTO books(title) VALUES("ブルーベリー本")'
     );
   })
-  .catch((error) => console.log(error.message))
+  .catch((error) => console.error(error.message))
   .then(() => displayAll(db, "SELECT * FROM book"))
-  .catch((error) => console.log(error.message))
+  .catch((error) => console.error(error.message))
   .finally(() => runSql(db, "drop table if exists books"));

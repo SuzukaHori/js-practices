@@ -39,14 +39,13 @@ db.run("DROP TABLE IF EXISTS books", () => {
           'INSERT INTO books(title) VALUES("ブルーベリー本")', // ここでエラー発生
           function (error) {
             if (error) {
-              console.log(error.message);
+              console.error(error.message);
             } else {
               console.log(`ID${this.lastID}が追加されました`);
             }
-            db.all("SELECT * FROM book", (error, rows) => {
-              //ここでエラー発生
+            db.all("SELECT * FROM book", (error, rows) => { //ここでエラー発生
               if (error) {
-                console.log(error.message);
+                console.error(error.message);
               } else {
                 rows.forEach((row) => console.log(row));
               }
