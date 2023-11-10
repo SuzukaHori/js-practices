@@ -28,7 +28,7 @@ runSql(
       console.log(row);
     });
   })
-  .then(() => runSql(db, "drop table if exists books"));
+  .then(() => runSql(db, "drop table books"));
 
 await timers.setTimeout(100);
 
@@ -50,4 +50,4 @@ runSql(
   .catch((error) => console.error(error.message))
   .then(() => displayAll(db, "SELECT * FROM book"))
   .catch((error) => console.error(error.message))
-  .finally(() => runSql(db, "drop table if exists books"));
+  .finally(() => runSql(db, "drop table books"));

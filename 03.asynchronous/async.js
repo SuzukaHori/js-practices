@@ -25,7 +25,7 @@ async function processSuccessfully() {
   rows.forEach((row) => {
     console.log(row);
   });
-  runSql(db, "drop table if exists books");
+  await runSql(db, "drop table books");
 }
 
 processSuccessfully();
@@ -54,7 +54,7 @@ async function processWithErrors() {
   } catch (error) {
     console.error(error.message);
   } finally {
-    runSql(db, "drop table if exists books");
+    runSql(db, "drop table books");
   }
 }
 
