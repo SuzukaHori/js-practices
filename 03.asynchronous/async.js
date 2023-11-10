@@ -8,17 +8,23 @@ const db = new sqlite3.Database(":memory:");
 
 async function processSuccessfully() {
   await runSql(
-    db, "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
+    db,
+    "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
   );
-  let result = await runSqlToInsert(
-    db, 'INSERT INTO books(title) VALUES("チェリー本")'
+  let id = await runSqlToInsert(
+    db,
+    'INSERT INTO books(title) VALUES("チェリー本")'
   );
-  console.log(result);
-  let result2 = await runSqlToInsert(
-    db, 'INSERT INTO books(title) VALUES("ブルーベリー本")'
+  console.log(`ID${id}の要素が追加されました`);
+  let id2 = await runSqlToInsert(
+    db,
+    'INSERT INTO books(title) VALUES("ブルーベリー本")'
   );
-  console.log(result2);
-  await displayAll(db, "SELECT * FROM books");
+  console.log(`ID${id2}の要素が追加されました`);
+  const rows = await displayAll(db, "SELECT * FROM books");
+  rows.forEach((row) => {
+    console.log(row);
+  });
   runSql(db, "drop table if exists books");
 }
 
@@ -30,12 +36,14 @@ await timers.setTimeout(100);
 
 async function processWithErrors() {
   await runSql(
-   db,  "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
+    db,
+    "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
   );
-  let result = await runSqlToInsert(
-    db, 'INSERT INTO books(title) VALUES("チェリー本")'
+  let id = await runSqlToInsert(
+    db,
+    'INSERT INTO books(title) VALUES("チェリー本")'
   );
-  console.log(result);
+  console.log(`ID${id}の要素が追加されました`);
   try {
     await runSqlToInsert(db, 'INSERT INTO books(title) VALUES("チェリー本")');
   } catch (error) {

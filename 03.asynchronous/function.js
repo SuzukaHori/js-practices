@@ -15,7 +15,7 @@ const runSqlToInsert = (db, sql) =>
       if (error) {
         reject(error);
       } else {
-        resolve(`ID${this.lastID}が追加されました`);
+        resolve(this.lastID);
       }
     });
   });
@@ -26,8 +26,7 @@ const displayAll = (db, sql) =>
       if (error) {
         reject(error);
       } else {
-        rows.forEach((element) => console.log(element));
-        resolve();
+        resolve(rows);
       }
     });
   });
