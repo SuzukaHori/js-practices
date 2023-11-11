@@ -13,8 +13,8 @@ db.run(
         "INSERT INTO books (title) VALUES ('ブルーベリー本')",
         function () {
           console.log(`ID${this.lastID}のデータが追加されました`);
-          db.all("SELECT * FROM books", (_error, rows) => {
-            rows.forEach((row) => console.log(row));
+          db.all("SELECT * FROM books", (_error, books) => {
+            books.forEach((book) => console.log(book));
             db.run("DROP TABLE books");
           });
         }
@@ -39,11 +39,11 @@ db.run(
           } else {
             console.log(`ID${this.lastID}のデータが追加されました`);
           }
-          db.all("SELECT * FROM book", (error, rows) => {
+          db.all("SELECT * FROM book", (error, books) => {
             if (error) {
               console.error(error.message);
             } else {
-              rows.forEach((row) => console.log(row));
+              books.forEach((book) => console.log(book));
             }
             db.run("DROP TABLE books");
           });

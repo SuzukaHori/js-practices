@@ -23,9 +23,9 @@ runSql(
     console.log(`ID${id}のデータが追加されました`);
     return runSqlToGetAll(db, "SELECT * FROM books");
   })
-  .then((rows) => {
-    rows.forEach((row) => {
-      console.log(row);
+  .then((books) => {
+    books.forEach((book) => {
+      console.log(book);
     });
   })
   .then(() => runSql(db, "DROP TABLE books"));
