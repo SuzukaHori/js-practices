@@ -7,13 +7,8 @@ import Enquirer from "enquirer";
 import { runSql, runSqlToInsert, runSqlToGetAll } from "./db-helpers.js";
 const db = new sqlite3.Database("./memo.db");
 
-async function choiceAndDisplay() {
-  const Memos = await runSqlToGetAll(db, "SELECT * FROM memos");
-  if (Memos.length === 0) {
-    console.log("メモはありません");
-    return;
-  }
-  const listStartOfMemo = Memos.map((memo) => memo.title);
+async function selectMemo(memos) {
+  const listStartOfMemo = memos.map((memo) => memo.title);
 
   const question = {
     name: "title",
@@ -22,8 +17,20 @@ async function choiceAndDisplay() {
     choices: listStartOfMemo,
   };
   const answer = await Enquirer.prompt(question);
-  const choice = Memos.find((memo) => memo.title == answer.title).content;
-  console.log(choice);
+  return answer;
+}
+
+async function selectAndDisplay() {
+  const memos = await runSqlToGetAll(db, "SELECT * FROM memos");
+  if (memos.length == 0) {
+    console.log("メモはありません");
+  } else {
+    const selected = await selectMemo(memos);
+    const selectedTitle = memos.find(
+      (memo) => memo.title == selected.title
+    ).content;
+    console.log(selectedTitle);
+  }
 }
 
 async function addMemo() {
@@ -55,6 +62,14 @@ async function addMemo() {
   console.log(`${id}番目のメモが追加されました`);
 }
 
+async function deleteMemo() {
+  const memos = await runSqlToGetAll(db, "SELECT * FROM memos");
+  const selected = await selectMemo(memos);
+  console.log(selected.title);
+  await runSql(db, `DELETE FROM memos WHERE title = '${selected.title}'`);
+  console.log(`${selected.title}が削除されました`);
+}
+
 async function main() {
   const option = minimist(process.argv.slice(2));
   await runSql(
@@ -62,7 +77,9 @@ async function main() {
     "CREATE TABLE IF NOT EXISTS memos (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title STRING(30) UNIQUE NOT NULL, content STRING(30))"
   );
   if (option.r) {
-    choiceAndDisplay();
+    selectAndDisplay();
+  } else if (option.d) {
+    deleteMemo();
   } else {
     addMemo();
   }
