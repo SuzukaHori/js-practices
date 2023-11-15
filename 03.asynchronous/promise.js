@@ -1,6 +1,6 @@
 import sqlite3 from "sqlite3";
 import timers from "timers/promises";
-import { runSql, runSqlToInsert, runSqlToGetAll } from "./db-helpers.js";
+import { runSql, runSqlToGetAll } from "./db-helpers.js";
 
 const db = new sqlite3.Database(":memory:");
 
@@ -10,11 +10,11 @@ runSql(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE NOT NULL)"
 )
   .then(() =>
-    runSqlToInsert(db, "INSERT INTO books (title) VALUES ('チェリー本')")
+    runSql(db, "INSERT INTO books (title) VALUES ('チェリー本')")
   )
   .then((queryResult) => {
     console.log(`ID${queryResult.lastID}のデータが追加されました`);
-    return runSqlToInsert(
+    return runSql(
       db,
       "INSERT INTO books (title) VALUES ('ブルーベリー本')"
     );
@@ -27,8 +27,8 @@ runSql(
     books.forEach((book) => {
       console.log(book);
     });
-  })
-  .then(() => runSql(db, "DROP TABLE books"));
+    runSql(db, "DROP TABLE books");
+  });
 
 await timers.setTimeout(100);
 
@@ -38,11 +38,11 @@ runSql(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE NOT NULL)"
 )
   .then(() =>
-    runSqlToInsert(db, "INSERT INTO books (title) VALUES ('チェリー本')")
+    runSql(db, "INSERT INTO books (title) VALUES ('チェリー本')")
   )
   .then((queryResult) => {
     console.log(`ID${queryResult.lastID}のデータが追加されました`);
-    return runSqlToInsert(
+    return runSql(
       db,
       "INSERT INTO books (title) VALUES ('チェリー本')"
     );

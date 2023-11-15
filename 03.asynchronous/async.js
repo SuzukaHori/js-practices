@@ -1,5 +1,5 @@
 import sqlite3 from "sqlite3";
-import { runSql, runSqlToInsert, runSqlToGetAll } from "./db-helpers.js";
+import { runSql, runSqlToGetAll } from "./db-helpers.js";
 
 const db = new sqlite3.Database(":memory:");
 
@@ -10,7 +10,7 @@ await runSql(
 );
 const bookNames = ["チェリー本", "ブルーベリー本"];
 const promisesForInsert = bookNames.map((bookName) => {
-  return runSqlToInsert(db, `INSERT INTO books (title) VALUES ('${bookName}')`);
+  return runSql(db, `INSERT INTO books (title) VALUES ('${bookName}')`);
 });
 const queryResults = await Promise.all(promisesForInsert);
 queryResults.forEach((queryResult) => {
@@ -27,13 +27,13 @@ await runSql(
   db,
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
 );
-const queryResult = await runSqlToInsert(
+const queryResult = await runSql(
   db,
   "INSERT INTO books (title) VALUES ('チェリー本')"
 );
 console.log(`ID${queryResult.lastID}のデータが追加されました`);
 try {
-  await runSqlToInsert(db, "INSERT INTO books (title) VALUES ('チェリー本')");
+  await runSql(db, "INSERT INTO books (title) VALUES ('チェリー本')");
 } catch (error) {
   if (error.code === "SQLITE_CONSTRAINT") {
     console.error(error.message);

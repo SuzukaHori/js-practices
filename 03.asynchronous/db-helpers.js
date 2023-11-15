@@ -1,16 +1,5 @@
 export const runSql = (db, sql) =>
   new Promise((resolve, reject) => {
-    db.run(sql, (error) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve();
-      }
-    });
-  });
-
-export const runSqlToInsert = (db, sql) =>
-  new Promise((resolve, reject) => {
     db.run(sql, function (error) {
       if (error) {
         reject(error);
