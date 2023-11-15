@@ -1,6 +1,6 @@
 import sqlite3 from "sqlite3";
 import timers from "timers/promises";
-import { runSql, GetAllRows } from "./db-helpers.js";
+import { runSql, retrieveAllRecords } from "./db-helpers.js";
 
 const db = new sqlite3.Database(":memory:");
 
@@ -16,7 +16,7 @@ runSql(
   })
   .then((queryResult) => {
     console.log(`ID${queryResult.lastID}のデータが追加されました`);
-    return GetAllRows(db, "SELECT * FROM books");
+    return retrieveAllRecords(db, "SELECT * FROM books");
   })
   .then((books) => {
     books.forEach((book) => {
@@ -40,7 +40,7 @@ runSql(
   .catch((error) => {
     if (error.code === "SQLITE_CONSTRAINT") {
       console.error(error.message);
-      return GetAllRows(db, "SELECT * FROM book");
+      return retrieveAllRecords(db, "SELECT * FROM book");
     } else {
       throw error;
     }
