@@ -15,7 +15,7 @@ export const runSqlToInsert = (db, sql) =>
       if (error) {
         reject(error);
       } else {
-        resolve(this.lastID);
+        resolve(this);
       }
     });
   });

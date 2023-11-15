@@ -12,15 +12,15 @@ runSql(
   .then(() =>
     runSqlToInsert(db, "INSERT INTO books (title) VALUES ('チェリー本')")
   )
-  .then((id) => {
-    console.log(`ID${id}のデータが追加されました`);
+  .then((queryResult) => {
+    console.log(`ID${queryResult.lastID}のデータが追加されました`);
     return runSqlToInsert(
       db,
       "INSERT INTO books (title) VALUES ('ブルーベリー本')"
     );
   })
-  .then((id) => {
-    console.log(`ID${id}のデータが追加されました`);
+  .then((queryResult) => {
+    console.log(`ID${queryResult.lastID}のデータが追加されました`);
     return runSqlToGetAll(db, "SELECT * FROM books");
   })
   .then((books) => {
@@ -40,8 +40,8 @@ runSql(
   .then(() =>
     runSqlToInsert(db, "INSERT INTO books (title) VALUES ('チェリー本')")
   )
-  .then((id) => {
-    console.log(`ID${id}のデータが追加されました`);
+  .then((queryResult) => {
+    console.log(`ID${queryResult.lastID}のデータが追加されました`);
     return runSqlToInsert(
       db,
       "INSERT INTO books (title) VALUES ('チェリー本')"
