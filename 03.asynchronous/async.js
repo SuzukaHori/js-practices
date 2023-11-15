@@ -9,11 +9,11 @@ await runSql(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
 );
 const bookNames = ["チェリー本", "ブルーベリー本"];
-bookNames.forEach(async (bookName) => {
-  let queryResult = await runSqlToInsert(
-    db,
-    `INSERT INTO books (title) VALUES ('${bookName}')`
-  );
+const promisesForInsert = bookNames.map((bookName) => {
+  return runSqlToInsert(db, `INSERT INTO books (title) VALUES ('${bookName}')`);
+});
+const queryResults = await Promise.all(promisesForInsert);
+queryResults.forEach((queryResult) => {
   console.log(`ID${queryResult.lastID}のデータが追加されました`);
 });
 const books = await runSqlToGetAll(db, "SELECT * FROM books");
