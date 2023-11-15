@@ -1,9 +1,9 @@
 import sqlite3 from "sqlite3";
-import { runSql, runSqlToGetAll } from "./db-helpers.js";
+import { runSql, GetAllRows } from "./db-helpers.js";
 
 const db = new sqlite3.Database(":memory:");
 
-// // エラーなし
+// エラーなし
 await runSql(
   db,
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
@@ -16,7 +16,7 @@ const queryResults = await Promise.all(promisesForInsert);
 queryResults.forEach((queryResult) => {
   console.log(`ID${queryResult.lastID}のデータが追加されました`);
 });
-const books = await runSqlToGetAll(db, "SELECT * FROM books");
+const books = await GetAllRows(db, "SELECT * FROM books");
 books.forEach((book) => {
   console.log(book);
 });
@@ -42,7 +42,7 @@ try {
   }
 }
 try {
-  await runSqlToGetAll(db, "SELECT * FROM book");
+  await GetAllRows(db, "SELECT * FROM book");
 } catch (error) {
   if (error.code === "SQLITE_ERROR") {
     console.error(error.message);

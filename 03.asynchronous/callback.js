@@ -3,7 +3,7 @@ import timers from "timers/promises";
 
 const db = new sqlite3.Database(":memory:");
 
-//エラーなし
+// エラーなし
 db.run(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)",
   () => {
@@ -14,7 +14,9 @@ db.run(
         function () {
           console.log(`ID${this.lastID}のデータが追加されました`);
           db.all("SELECT * FROM books", (_error, books) => {
-            books.forEach((book) => console.log(book));
+            books.forEach((book) => {
+              console.log(book);
+            });
             db.run("DROP TABLE books");
           });
         }

@@ -9,7 +9,7 @@ export const runSql = (db, sql) =>
     });
   });
 
-export const runSqlToGetAll = (db, sql) =>
+export const GetAllRows = (db, sql) =>
   new Promise((resolve, reject) => {
     db.all(sql, (error, rows) => {
       if (error) {
