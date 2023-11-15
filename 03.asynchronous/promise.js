@@ -40,16 +40,16 @@ runSql(
   .catch((error) => {
     if (error.code === "SQLITE_CONSTRAINT") {
       console.error(error.message);
+      return GetAllRows(db, "SELECT * FROM book");
     } else {
       throw error;
     }
   })
-  .then(() => GetAllRows(db, "SELECT * FROM book"))
   .catch((error) => {
     if (error.code === "SQLITE_ERROR") {
       console.error(error.message);
+      return runSql(db, "DROP TABLE books");
     } else {
       throw error;
     }
-  })
-  .then(() => runSql(db, "DROP TABLE books"));
+  });
