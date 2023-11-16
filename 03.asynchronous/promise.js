@@ -22,7 +22,7 @@ runSql(
     books.forEach((book) => {
       console.log(book);
     });
-    runSql(db, "DROP TABLE books");
+    return runSql(db, "DROP TABLE books");
   });
 
 await timers.setTimeout(100);
