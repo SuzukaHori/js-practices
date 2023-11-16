@@ -4,68 +4,71 @@ import sqlite3 from "sqlite3";
 import readline from "readline";
 import minimist from "minimist";
 import Enquirer from "enquirer";
-import { runSql, runSqlToInsert, runSqlToGetAll } from "./db-helpers.js";
+import { runSql, retrieveAllRecords } from "./db-helpers.js";
 const db = new sqlite3.Database("./memo.db");
 
-async function selectMemo(memos) {
-  const listStartOfMemo = memos.map((memo) => memo.title);
+async function select(memos) {
+  const titleList = memos.map((memo) => memo.title);
 
   const question = {
     name: "title",
     type: "select",
     message: "メモを選んでください",
-    choices: listStartOfMemo,
+    choices: titleList,
   };
   const answer = await Enquirer.prompt(question);
   return answer;
 }
 
 async function selectAndDisplay() {
-  const memos = await runSqlToGetAll(db, "SELECT * FROM memos");
+  const memos = await retrieveAllRecords(db, "SELECT * FROM memos");
   if (memos.length == 0) {
     console.log("メモはありません");
   } else {
-    const selected = await selectMemo(memos);
-    const selectedTitle = memos.find(
-      (memo) => memo.title == selected.title
-    ).content;
-    console.log(selectedTitle);
+    const selected = await select(memos);
+    const content = memos.find((memo) => memo.title == selected.title).content;
+    console.log(content);
   }
 }
 
-async function addMemo() {
-  process.stdin.resume();
-  process.stdin.setEncoding("utf8");
-
-  const memo = [];
-  const reader = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  await new Promise((resolve) => {
-    reader.on("line", (lines) => {
-      memo.push(lines);
-      resolve(memo);
+function acceptInputByLine(reader) {
+  return new Promise((resolve) => {
+    const lines = [];
+    reader.on("line", (line) => {
+      lines.push(line);
+      resolve(lines);
     });
   });
+}
 
-  await new Promise((resolve) => {
-    reader.on("close", resolve(""));
+async function createMemoObject(reader) {
+  const memoByLine = await acceptInputByLine(reader);
+  reader.close();
+  const title = memoByLine[0];
+  const content = memoByLine.join("\n");
+  return { title: title, content: content };
+}
+
+async function create() {
+  process.stdin.resume();
+  process.stdin.setEncoding("utf8");
+  const reader = readline.createInterface({
+    input: process.stdin,
   });
-  const title = memo[0];
-  const content = memo.join("\n");
-  const id = await runSqlToInsert(
-    db,
-    `INSERT INTO memos (title, content) VALUES ('${title}', '${content}')`
-  );
-  console.log(`${id}番目のメモが追加されました`);
+  const memo = await createMemoObject(reader);
+  try {
+    await runSql(
+      db,
+      `INSERT INTO memos (title, content) VALUES ('${memo.title}', '${memo.content}')`
+    );
+  } catch {
+    console.log("メモの一行目はユニークにしてください");
+  }
 }
 
 async function deleteMemo() {
-  const memos = await runSqlToGetAll(db, "SELECT * FROM memos");
-  const selected = await selectMemo(memos);
-  console.log(selected.title);
+  const memos = await retrieveAllRecords(db, "SELECT * FROM memos");
+  const selected = await select(memos);
   await runSql(db, `DELETE FROM memos WHERE title = '${selected.title}'`);
   console.log(`${selected.title}が削除されました`);
 }
@@ -81,7 +84,7 @@ async function main() {
   } else if (option.d) {
     deleteMemo();
   } else {
-    addMemo();
+    create();
   }
 }
 
