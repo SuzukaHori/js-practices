@@ -10,11 +10,11 @@ await run(
 );
 const bookNames = ["チェリー本", "ブルーベリー本"];
 for (const bookName of bookNames) {
-  const queryResult = await run(
+  const result = await run(
     db,
     `INSERT INTO books (title) VALUES ('${bookName}')`
   );
-  console.log(`ID${queryResult.lastID}のデータが追加されました`);
+  console.log(`ID${result.lastID}のデータが追加されました`);
 }
 const books = await all(db, "SELECT * FROM books");
 books.forEach((book) => {
@@ -27,11 +27,11 @@ await run(
   db,
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
 );
-const queryResult = await run(
+const result = await run(
   db,
   "INSERT INTO books (title) VALUES ('チェリー本')"
 );
-console.log(`ID${queryResult.lastID}のデータが追加されました`);
+console.log(`ID${result.lastID}のデータが追加されました`);
 try {
   await run(db, "INSERT INTO books (title) VALUES ('チェリー本')");
 } catch (error) {

@@ -10,12 +10,12 @@ run(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE NOT NULL)"
 )
   .then(() => run(db, "INSERT INTO books (title) VALUES ('チェリー本')"))
-  .then((queryResult) => {
-    console.log(`ID${queryResult.lastID}のデータが追加されました`);
+  .then((result) => {
+    console.log(`ID${result.lastID}のデータが追加されました`);
     return run(db, "INSERT INTO books (title) VALUES ('ブルーベリー本')");
   })
-  .then((queryResult) => {
-    console.log(`ID${queryResult.lastID}のデータが追加されました`);
+  .then((result) => {
+    console.log(`ID${result.lastID}のデータが追加されました`);
     return all(db, "SELECT * FROM books");
   })
   .then((books) => {
@@ -33,8 +33,8 @@ run(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE NOT NULL)"
 )
   .then(() => run(db, "INSERT INTO books (title) VALUES ('チェリー本')"))
-  .then((queryResult) => {
-    console.log(`ID${queryResult.lastID}のデータが追加されました`);
+  .then((result) => {
+    console.log(`ID${result.lastID}のデータが追加されました`);
     return run(db, "INSERT INTO books (title) VALUES ('チェリー本')");
   })
   .catch((error) => {
