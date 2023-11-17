@@ -38,7 +38,7 @@ run(
     return run(db, "INSERT INTO books (title) VALUES ('チェリー本')");
   })
   .catch((error) => {
-    if (error.code === "SQLITE_CONSTRAINT") {
+    if (error instanceof Error && error.code === "SQLITE_CONSTRAINT") {
       console.error(error.message);
       return all(db, "SELECT * FROM book");
     } else {
@@ -46,7 +46,7 @@ run(
     }
   })
   .catch((error) => {
-    if (error.code === "SQLITE_ERROR") {
+    if (error instanceof Error && error.code === "SQLITE_ERROR") {
       console.error(error.message);
       return run(db, "DROP TABLE books");
     } else {
