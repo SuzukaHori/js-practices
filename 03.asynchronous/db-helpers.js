@@ -1,4 +1,4 @@
-export const runSql = (db, sql) =>
+export const run = (db, sql) =>
   new Promise((resolve, reject) => {
     db.run(sql, function (error) {
       if (error) {
@@ -9,7 +9,7 @@ export const runSql = (db, sql) =>
     });
   });
 
-export const retrieveAllRecords = (db, sql) =>
+export const all = (db, sql) =>
   new Promise((resolve, reject) => {
     db.all(sql, (error, rows) => {
       if (error) {

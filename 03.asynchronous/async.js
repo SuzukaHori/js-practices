@@ -1,39 +1,39 @@
 import sqlite3 from "sqlite3";
-import { runSql, retrieveAllRecords } from "./db-helpers.js";
+import { run, all } from "./db-helpers.js";
 
 const db = new sqlite3.Database(":memory:");
 
 // エラーなし
-await runSql(
+await run(
   db,
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
 );
 const bookNames = ["チェリー本", "ブルーベリー本"];
 for (const bookName of bookNames) {
-  const queryResult = await runSql(
+  const queryResult = await run(
     db,
     `INSERT INTO books (title) VALUES ('${bookName}')`
   );
   console.log(`ID${queryResult.lastID}のデータが追加されました`);
 }
-const books = await retrieveAllRecords(db, "SELECT * FROM books");
+const books = await all(db, "SELECT * FROM books");
 books.forEach((book) => {
   console.log(book);
 });
-await runSql(db, "DROP TABLE books");
+await run(db, "DROP TABLE books");
 
 // エラーあり
-await runSql(
+await run(
   db,
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
 );
-const queryResult = await runSql(
+const queryResult = await run(
   db,
   "INSERT INTO books (title) VALUES ('チェリー本')"
 );
 console.log(`ID${queryResult.lastID}のデータが追加されました`);
 try {
-  await runSql(db, "INSERT INTO books (title) VALUES ('チェリー本')");
+  await run(db, "INSERT INTO books (title) VALUES ('チェリー本')");
 } catch (error) {
   if (error.code === "SQLITE_CONSTRAINT") {
     console.error(error.message);
@@ -42,7 +42,7 @@ try {
   }
 }
 try {
-  await retrieveAllRecords(db, "SELECT * FROM book");
+  await all(db, "SELECT * FROM book");
 } catch (error) {
   if (error.code === "SQLITE_ERROR") {
     console.error(error.message);
@@ -50,4 +50,4 @@ try {
     throw error;
   }
 }
-await runSql(db, "DROP TABLE books");
+await run(db, "DROP TABLE books");
