@@ -27,10 +27,7 @@ await run(
   db,
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
 );
-const result = await run(
-  db,
-  "INSERT INTO books (title) VALUES ('チェリー本')"
-);
+const result = await run(db, "INSERT INTO books (title) VALUES ('チェリー本')");
 console.log(`ID${result.lastID}のデータが追加されました`);
 try {
   await run(db, "INSERT INTO books (title) VALUES ('チェリー本')");
