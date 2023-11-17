@@ -45,7 +45,9 @@ db.run(
             if (error) {
               console.error(error.message);
             } else {
-              books.forEach((book) => console.log(book));
+              books.forEach((book) => {
+                console.log(book);
+              });
             }
             db.run("DROP TABLE books");
           });
