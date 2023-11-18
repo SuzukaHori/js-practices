@@ -12,7 +12,8 @@ const bookNames = ["チェリー本", "ブルーベリー本"];
 for (const bookName of bookNames) {
   const result = await run(
     db,
-    `INSERT INTO books (title) VALUES ('${bookName}')`
+    "INSERT INTO books (title) VALUES (?)",
+    bookName
   );
   console.log(`ID${result.lastID}のデータが追加されました`);
 }
@@ -27,10 +28,14 @@ await run(
   db,
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
 );
-const result = await run(db, "INSERT INTO books (title) VALUES ('チェリー本')");
+const result = await run(
+  db,
+  "INSERT INTO books (title) VALUES (?)",
+  "チェリー本"
+);
 console.log(`ID${result.lastID}のデータが追加されました`);
 try {
-  await run(db, "INSERT INTO books (title) VALUES ('チェリー本')");
+  await run(db, "INSERT INTO books (title) VALUES (?)", "チェリー本");
 } catch (error) {
   if (error instanceof Error && error.code === "SQLITE_CONSTRAINT") {
     console.error(error.message);

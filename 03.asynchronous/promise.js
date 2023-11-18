@@ -9,10 +9,10 @@ run(
   db,
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE NOT NULL)"
 )
-  .then(() => run(db, "INSERT INTO books (title) VALUES ('チェリー本')"))
+  .then(() => run(db, "INSERT INTO books (title) VALUES (?)", "チェリー本"))
   .then((result) => {
     console.log(`ID${result.lastID}のデータが追加されました`);
-    return run(db, "INSERT INTO books (title) VALUES ('ブルーベリー本')");
+    return run(db, "INSERT INTO books (title) VALUES (?)", "ブルーベリー本");
   })
   .then((result) => {
     console.log(`ID${result.lastID}のデータが追加されました`);
@@ -32,10 +32,10 @@ run(
   db,
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) UNIQUE NOT NULL)"
 )
-  .then(() => run(db, "INSERT INTO books (title) VALUES ('チェリー本')"))
+  .then(() => run(db, "INSERT INTO books (title) VALUES (?)", "チェリー本"))
   .then((result) => {
     console.log(`ID${result.lastID}のデータが追加されました`);
-    return run(db, "INSERT INTO books (title) VALUES ('チェリー本')");
+    return run(db, "INSERT INTO books (title) VALUES (?)", "チェリー本");
   })
   .catch((error) => {
     if (error instanceof Error && error.code === "SQLITE_CONSTRAINT") {

@@ -1,6 +1,6 @@
-export const run = (db, sql) =>
+export const run = (db, sql, params = []) =>
   new Promise((resolve, reject) => {
-    db.run(sql, function (error) {
+    db.run(sql, params, function (error) {
       if (error) {
         reject(error);
       } else {

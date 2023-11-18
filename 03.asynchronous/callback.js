@@ -7,10 +7,11 @@ const db = new sqlite3.Database(":memory:");
 db.run(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)",
   () => {
-    db.run("INSERT INTO books (title) VALUES ('チェリー本')", function () {
+    db.run("INSERT INTO books (title) VALUES (?)", "チェリー本", function () {
       console.log(`ID${this.lastID}のデータが追加されました`);
       db.run(
-        "INSERT INTO books (title) VALUES ('ブルーベリー本')",
+        "INSERT INTO books (title) VALUES (?)",
+        "ブルーベリー本",
         function () {
           console.log(`ID${this.lastID}のデータが追加されました`);
           db.all("SELECT * FROM books", (_error, books) => {
@@ -31,10 +32,11 @@ await timers.setTimeout(100);
 db.run(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)",
   () => {
-    db.run("INSERT INTO books (title) VALUES ('チェリー本')", function () {
+    db.run("INSERT INTO books (title) VALUES(?)", "チェリー本", function () {
       console.log(`ID${this.lastID}のデータが追加されました`);
       db.run(
-        "INSERT INTO books (title) VALUES ('チェリー本')",
+        "INSERT INTO books (title) VALUES(?)",
+        "チェリー本",
         function (error) {
           if (error) {
             console.error(error.message);
