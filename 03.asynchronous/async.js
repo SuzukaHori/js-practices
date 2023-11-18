@@ -8,12 +8,12 @@ await run(
   db,
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title VARCHAR(10) NOT NULL UNIQUE)"
 );
-const bookNames = ["チェリー本", "ブルーベリー本"];
-for (const bookName of bookNames) {
+const titles = ["チェリー本", "ブルーベリー本"];
+for (const title of titles) {
   const result = await run(
     db,
     "INSERT INTO books (title) VALUES (?)",
-    bookName
+    title
   );
   console.log(`ID${result.lastID}のデータが追加されました`);
 }
