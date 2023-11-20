@@ -9,9 +9,9 @@ export const run = (db, sql, params = []) =>
     });
   });
 
-export const all = (db, sql) =>
+export const all = (db, sql, params = []) =>
   new Promise((resolve, reject) => {
-    db.all(sql, (error, rows) => {
+    db.all(sql, params, (error, rows) => {
       if (error) {
         reject(error);
       } else {
