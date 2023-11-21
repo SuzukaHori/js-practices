@@ -1,18 +1,17 @@
 import Enquirer from "enquirer";
-import { dataManager } from "./dataManager.js";
-import { InputReader } from "./InputReader.js";
+import { dbManager } from "./dbManager.js";
 
 export class memosController {
   constructor() {}
 
   async build() {
-    this.dataManager = new dataManager();
-    await this.dataManager.createTable();
-    this.memos = await this.dataManager.getAll();
+    this.dbManager = new dbManager();
+    await this.dbManager.createTable();
+    this.memos = await this.dbManager.getAll();
   }
 
   async index() {
-    this.memos = await this.dataManager.getAll();
+    this.memos = await this.dbManager.getAll();
     if (this.memos.length === 0) {
       console.log("メモはありません");
     } else {
@@ -23,11 +22,25 @@ export class memosController {
   }
 
   async show() {
-    const selectedMemo = await this.select();
+    const selectedMemo = await this.#select();
     console.log(selectedMemo.full());
   }
 
-  async select() {
+  async create(memo) {
+    try {
+      await this.dbManager.insert(memo);
+    } catch (Error) {
+      console.log(Error);
+    }
+  }
+
+  async destroy() {
+    const selectedMemo = await this.select();
+    const result = await this.dbManager.delete(selectedMemo);
+    console.log(result);
+  }
+  
+  async #select() {
     const titleList = this.memos.map((memo) => memo.title);
     const question = {
       name: "title",
@@ -38,23 +51,6 @@ export class memosController {
     const answer = await Enquirer.prompt(question);
     const selectedMemo = this.#findByTitle(answer.title);
     return selectedMemo;
-  }
-
-  async create() {
-    const input = new InputReader();
-    const memo = await input.receiveTitleAndContent();
-    console.log(memo);
-    try {
-      await this.dataManager.insert(memo);
-    } catch (Error) {
-      console.log(Error);
-    }
-  }
-
-  async destroy() {
-    const selectedMemo = await this.select();
-    const result = await this.dataManager.delete(selectedMemo);
-    console.log(result);
   }
 
   #findByTitle(title) {

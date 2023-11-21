@@ -1,6 +1,6 @@
 import readline from "readline";
 
-export class InputReader {
+export class Input {
   constructor() {
     process.stdin.resume();
     process.stdin.setEncoding("utf8");

@@ -1,5 +1,6 @@
 import minimist from "minimist";
 import { memosController } from "./memosController.js";
+import { Input } from "./Input.js";
 
 async function main() {
   const option = minimist(process.argv.slice(2));
@@ -12,7 +13,9 @@ async function main() {
   } else if (option.d) {
     memosFactory.destroy();
   } else {
-    memosFactory.create();
+    const input = new Input();
+    const memo = await input.receiveTitleAndContent();
+    memosFactory.create(memo);
   }
 }
 

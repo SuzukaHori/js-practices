@@ -1,7 +1,7 @@
 import sqlite3 from "sqlite3";
 import { Memo } from "./memo.js";
 
-export class dataManager {
+export class dbManager {
   constructor() {
     this.db = new sqlite3.Database("./memo.db");
   }
