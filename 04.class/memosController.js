@@ -1,11 +1,11 @@
 import Enquirer from "enquirer";
-import { dbManager } from "./dbManager.js";
+import { DbManager } from "./DbManager.js";
 
-export class memosController {
+export class MemosController {
   constructor() {}
 
   async build() {
-    this.dbManager = new dbManager();
+    this.dbManager = new DbManager();
     await this.dbManager.createTable();
     this.memos = await this.dbManager.getAll();
   }
@@ -35,11 +35,11 @@ export class memosController {
   }
 
   async destroy() {
-    const selectedMemo = await this.select();
+    const selectedMemo = await this.#select();
     const result = await this.dbManager.delete(selectedMemo);
     console.log(result);
   }
-  
+
   async #select() {
     const titleList = this.memos.map((memo) => memo.title);
     const question = {

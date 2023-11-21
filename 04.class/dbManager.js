@@ -1,7 +1,7 @@
 import sqlite3 from "sqlite3";
-import { Memo } from "./memo.js";
+import { Memo } from "./Memo.js";
 
-export class dbManager {
+export class DbManager {
   constructor() {
     this.db = new sqlite3.Database("./memo.db");
   }
@@ -17,17 +17,17 @@ export class dbManager {
     return memos.map((memo) => new Memo(memo.id, memo.title, memo.content));
   }
 
-  async insert(memo) {
-    await this.#run(
+  async insert(title, content) {
+    const result = await this.#run(
       `INSERT INTO memos (title, content) VALUES ($title, $content)`,
-      { $title: memo.title, $content: memo.content }
+      { $title: title, $content: content }
     );
-
-    return memo;
+    return new Memo(result.lastID, title, content);
   }
 
-  delete(memo) {
-    return this.#run(`DELETE FROM memos WHERE id = ?`, memo.id);
+  async delete(memo) {
+    await this.#run(`DELETE FROM memos WHERE id = ?`, memo.id);
+    return memo;
   }
 
   #run(sql, params = []) {

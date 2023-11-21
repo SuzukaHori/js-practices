@@ -1,22 +1,42 @@
 import minimist from "minimist";
-import { memosController } from "./memosController.js";
-import { Input } from "./Input.js";
+import { MemosController } from "./MemosController.js";
+import readline from "readline";
 
 async function main() {
   const option = minimist(process.argv.slice(2));
-  const memosFactory = new memosController();
-  await memosFactory.build();
+  const memosController = new MemosController();
+
+  await memosController.build();
+
   if (option.l) {
-    memosFactory.index();
+    memosController.index();
   } else if (option.r) {
-    memosFactory.show();
+    memosController.show();
   } else if (option.d) {
-    memosFactory.destroy();
+    memosController.destroy();
   } else {
-    const input = new Input();
-    const memo = await input.receiveTitleAndContent();
-    memosFactory.create(memo);
+    const obj = await inputTitleAndContent();
+    memosController.create(obj.title, obj.content);
   }
+}
+
+async function inputTitleAndContent() {
+  process.stdin.resume();
+  process.stdin.setEncoding("utf8");
+  const reader = readline.createInterface({
+    input: process.stdin,
+  });
+  const lines = await new Promise((resolve) => {
+    const lines = [];
+    reader.on("line", (line) => {
+      lines.push(line);
+      resolve(lines);
+    });
+  });
+  reader.close();
+  const title = lines[0];
+  const content = lines.slice(1).join("\n");
+  return { title: title, content: content };
 }
 
 main();
