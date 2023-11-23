@@ -19,14 +19,14 @@ export class DbManager {
 
   async insert(title, content) {
     const result = await this.#run(
-      `INSERT INTO memos (title, content) VALUES ($title, $content)`,
+      "INSERT INTO memos (title, content) VALUES ($title, $content)",
       { $title: title, $content: content }
     );
     return new Memo(result.lastID, title, content);
   }
 
   async delete(memo) {
-    await this.#run(`DELETE FROM memos WHERE id = ?`, memo.id);
+    await this.#run("DELETE FROM memos WHERE id = ?", memo.id);
     return memo;
   }
 
@@ -37,18 +37,6 @@ export class DbManager {
           reject(error);
         } else {
           resolve(this);
-        }
-      });
-    });
-  }
-
-  #get(sql, params = []) {
-    return new Promise((resolve, reject) => {
-      this.db.get(sql, params, function (error, row) {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(row);
         }
       });
     });

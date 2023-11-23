@@ -5,7 +5,7 @@ export class Memo {
     this.content = content;
   }
 
-  full() {
+  fullText() {
     return this.title + "\n" + this.content;
   }
 }

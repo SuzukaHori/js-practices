@@ -11,26 +11,26 @@ export class MemosController {
   }
 
   async index() {
-    this.memos = await this.dbManager.getAll();
-    if (this.memos.length === 0) {
-      console.log("メモはありません");
-    } else {
-      for (const memo of this.memos) {
-        console.log(memo.title);
-      }
+    this.#exitIfNoMemoExists();
+    for (const memo of this.memos) {
+      console.log(memo.title);
     }
   }
 
-  async show() {
+  async read() {
     const selectedMemo = await this.#select();
-    console.log(selectedMemo.full());
+    console.log(selectedMemo.fullText());
   }
 
-  async create(memo) {
+  async create(title, content) {
     try {
-      await this.dbManager.insert(memo);
-    } catch (Error) {
-      console.log(Error);
+      await this.dbManager.insert(title, content);
+    } catch (error) {
+      if (error instanceof Error && error.code === "SQLITE_CONSTRAINT") {
+        console.error("Error: The first line of a memo must be unique");
+      } else {
+        throw error;
+      }
     }
   }
 
@@ -42,6 +42,7 @@ export class MemosController {
 
   async #select() {
     const titleList = this.memos.map((memo) => memo.title);
+    this.#exitIfNoMemoExists();
     const question = {
       name: "title",
       type: "select",
@@ -54,9 +55,16 @@ export class MemosController {
   }
 
   #findByTitle(title) {
-    const result = this.memos.find((memo) => {
+    const found = this.memos.find((memo) => {
       return memo.title === title;
     });
-    return result;
+    return found;
+  }
+
+  #exitIfNoMemoExists() {
+    if (this.memos.length === 0) {
+      console.log("メモはありません");
+      process.exit();
+    }
   }
 }

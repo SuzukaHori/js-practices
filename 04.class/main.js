@@ -5,18 +5,17 @@ import readline from "readline";
 async function main() {
   const option = minimist(process.argv.slice(2));
   const memosController = new MemosController();
-
   await memosController.build();
 
   if (option.l) {
     memosController.index();
   } else if (option.r) {
-    memosController.show();
+    memosController.read();
   } else if (option.d) {
     memosController.destroy();
   } else {
-    const obj = await inputTitleAndContent();
-    memosController.create(obj.title, obj.content);
+    const [title, content] = await inputTitleAndContent();
+    memosController.create(title, content);
   }
 }
 
@@ -36,7 +35,7 @@ async function inputTitleAndContent() {
   reader.close();
   const title = lines[0];
   const content = lines.slice(1).join("\n");
-  return { title: title, content: content };
+  return [title, content];
 }
 
 main();
