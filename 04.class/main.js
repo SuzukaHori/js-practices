@@ -16,12 +16,12 @@ async function main() {
   } else if (option.d) {
     memosController.destroy();
   } else {
-    const [title, content] = await inputTitleAndContent();
+    const [title, content] = await readTitleAndContentFromInput();
     memosController.create(title, content);
   }
 }
 
-async function inputTitleAndContent() {
+async function readTitleAndContentFromInput() {
   process.stdin.resume();
   process.stdin.setEncoding("utf8");
   const reader = readline.createInterface({

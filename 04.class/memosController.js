@@ -13,39 +13,39 @@ export class MemosController {
     }
   }
 
-  async read() {
-    const memos = await this.#getAllMemos();
-    const selectedMemo = await this.#select(memos);
-    console.log(selectedMemo.fullText());
-  }
-
   async create(title, content) {
     try {
-      const result = await this.dbManager.insert(title, content);
-      console.log(result)
+      const insertedMemo = await this.dbManager.insert(title, content);
+      console.log(`Memo "${insertedMemo.title}" inserted.`)
     } catch (error) {
       if (error instanceof Error && error.code === "SQLITE_CONSTRAINT") {
-        console.error("Error: The first line of a memo must be unique");
+        console.error("Error: The first line of a memo must be unique.");
       } else {
         throw error;
       }
     }
   }
 
-  async destroy() {
+  async read() {
     const memos = await this.#getAllMemos();
-    const selectedMemo = await this.#select(memos);
-    const result = await this.dbManager.delete(selectedMemo);
-    console.log(result);
+    const selectedMemo = await this.#select(memos, "see");
+    console.log(selectedMemo.fullText());
   }
 
-  async #select(memos) {
+  async destroy() {
+    const memos = await this.#getAllMemos();
+    const selectedMemo = await this.#select(memos, "destroy");
+    const destroyedMemo = await this.dbManager.delete(selectedMemo);
+    console.log(`Memo "${destroyedMemo.title}" destroyed.`)
+  }
+
+  async #select(memos, action) {
     this.#exitIfEmpty(memos);
     const titleList = memos.map((memo) => memo.title);
     const question = {
       name: "title",
       type: "select",
-      message: "Choose a note you want to see:",
+      message: `Choose a note you want to ${action}:`,
       choices: titleList,
     };
     const answer = await Enquirer.prompt(question);
@@ -54,15 +54,13 @@ export class MemosController {
   }
 
   async #getAllMemos() {
-    const memos = await this.dbManager.getAll();
-    return memos;
+    return await this.dbManager.getAll();
   }
 
   #findByTitle(memos, title) {
-    const found = memos.find((memo) => {
+    return memos.find((memo) => {
       return memo.title === title;
     });
-    return found;
   }
 
   #exitIfEmpty(memos) {
