@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import minimist from "minimist";
 import readline from "readline";
 import { MemosController } from "./MemosController.js";
