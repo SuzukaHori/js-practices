@@ -16,7 +16,7 @@ export class MemosController {
   async create(title, content) {
     try {
       const insertedMemo = await this.dbManager.insert(title, content);
-      console.log(`Memo "${insertedMemo.title}" inserted.`)
+      console.log(`Memo "${insertedMemo.title}" inserted.`);
     } catch (error) {
       if (error instanceof Error && error.code === "SQLITE_CONSTRAINT") {
         console.error("Error: The first line of a memo must be unique.");
@@ -36,7 +36,7 @@ export class MemosController {
     const memos = await this.#getAllMemos();
     const selectedMemo = await this.#select(memos, "destroy");
     const destroyedMemo = await this.dbManager.delete(selectedMemo);
-    console.log(`Memo "${destroyedMemo.title}" destroyed.`)
+    console.log(`Memo "${destroyedMemo.title}" destroyed.`);
   }
 
   async #select(memos, action) {

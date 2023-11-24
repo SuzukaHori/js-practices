@@ -16,12 +16,14 @@ async function main() {
   } else if (option.d) {
     memosController.destroy();
   } else {
-    const [title, content] = await readTitleAndContentFromInput();
+    const lines = await readLinesFromInput();
+    const title = lines[0];
+    const content = lines.slice(1).join("\n");
     memosController.create(title, content);
   }
 }
 
-async function readTitleAndContentFromInput() {
+async function readLinesFromInput() {
   process.stdin.resume();
   process.stdin.setEncoding("utf8");
   const reader = readline.createInterface({
@@ -35,9 +37,7 @@ async function readTitleAndContentFromInput() {
     });
   });
   reader.close();
-  const title = lines[0];
-  const content = lines.slice(1).join("\n");
-  return [title, content];
+  return lines;
 }
 
 main();
