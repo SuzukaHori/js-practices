@@ -41,26 +41,19 @@ export class MemosController {
 
   async #select(memos, action) {
     this.#exitIfEmpty(memos);
-    const titleList = memos.map((memo) => memo.title);
     const question = {
-      name: "title",
+      name: "memo",
       type: "select",
       message: `Choose a note you want to ${action}:`,
-      choices: titleList,
+      choices: memos.map((memo) => ({ name: memo, message: memo.title })),
     };
     const answer = await Enquirer.prompt(question);
-    const selectedMemo = this.#findByTitle(memos, answer.title);
+    const selectedMemo = answer.memo;
     return selectedMemo;
   }
 
   async #getAllMemos() {
     return await this.dbManager.getAll();
-  }
-
-  #findByTitle(memos, title) {
-    return memos.find((memo) => {
-      return memo.title === title;
-    });
   }
 
   #exitIfEmpty(memos) {
