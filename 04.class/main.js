@@ -2,8 +2,8 @@
 
 import minimist from "minimist";
 import readline from "readline";
-import { MemosController } from "./MemosController.js";
-import { DbManager } from "./DbManager.js";
+import { MemosController } from "./memos-controller.js";
+import { DbManager } from "./db-manager.js";
 
 async function main() {
   const option = minimist(process.argv.slice(2));
