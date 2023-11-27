@@ -6,60 +6,78 @@ export class MemosController {
   }
 
   async index() {
-    const memos = await this.#getAllMemos();
-    this.#exitIfEmpty(memos);
-    for (const memo of memos) {
+    await this.#setMemos();
+    if (this.#memosEmpty()) {
+      console.log("Memo does not exist.");
+      return;
+    }
+    for (const memo of this.memos) {
       console.log(memo.title);
     }
   }
 
   async create(title, content) {
+    let insertedMemo;
     try {
-      const insertedMemo = await this.dbManager.insert(title, content);
-      console.log(`Memo "${insertedMemo.title}" inserted.`);
+      insertedMemo = await this.dbManager.insert(title, content);
     } catch (error) {
       if (error instanceof Error && error.code === "SQLITE_CONSTRAINT") {
-        console.error("Error: The first line of a memo must be unique.");
+        console.error("The first line of a memo must be unique.");
       } else {
-        throw error;
+        throw Error;
       }
     }
+    console.log(`Memo "${insertedMemo.title}" inserted.`);
   }
 
   async read() {
-    const memos = await this.#getAllMemos();
-    const selectedMemo = await this.#select(memos, "see");
+    await this.#setMemos();
+    if (this.#memosEmpty()) {
+      console.log("Memo does not exist.");
+      return;
+    }
+    const selectedMemo = await this.#select("see");
     console.log(selectedMemo.fullText());
   }
 
   async destroy() {
-    const memos = await this.#getAllMemos();
-    const selectedMemo = await this.#select(memos, "destroy");
-    const destroyedMemo = await this.dbManager.delete(selectedMemo);
+    await this.#setMemos();
+    if (this.#memosEmpty()) {
+      console.log("Memo does not exist.");
+      return;
+    }
+    const selectedMemo = await this.#select("destroy");
+    let destroyedMemo;
+    try {
+      destroyedMemo = await this.dbManager.delete(selectedMemo);
+    } catch (error) {
+      console.error("Failed to delete memo.");
+      throw error;
+    }
     console.log(`Memo "${destroyedMemo.title}" destroyed.`);
   }
 
-  async #select(memos, action) {
-    this.#exitIfEmpty(memos);
+  async #setMemos() {
+    try {
+      this.memos = await this.dbManager.getAll();
+    } catch (error) {
+      console.error("Failed to get memos.");
+      throw error;
+    }
+  }
+
+  async #select(action) {
     const question = {
       name: "memo",
       type: "select",
       message: `Choose a note you want to ${action}:`,
-      choices: memos.map((memo) => ({ name: memo, message: memo.title })),
+      choices: this.memos.map((memo) => ({ name: memo, message: memo.title })),
     };
     const answer = await Enquirer.prompt(question);
-    const selectedMemo = answer.memo;
-    return selectedMemo;
+    return answer.memo;
   }
 
-  async #getAllMemos() {
-    return await this.dbManager.getAll();
-  }
-
-  #exitIfEmpty(memos) {
-    if (memos.length === 0) {
-      console.log("メモはありません");
-      process.exit();
-    }
+  #memosEmpty() {
+    return this.memos.length === 0;
   }
 }
