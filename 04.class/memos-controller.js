@@ -24,7 +24,7 @@ export class MemosController {
       if (error instanceof Error && error.code === "SQLITE_CONSTRAINT") {
         console.error("The first line of a memo must be unique.");
       } else {
-        throw Error;
+        throw error;
       }
     }
     console.log(`Memo "${insertedMemo.title}" inserted.`);
@@ -68,13 +68,13 @@ export class MemosController {
 
   async #select(action) {
     const question = {
-      name: "memo",
+      name: "title",
       type: "select",
       message: `Choose a note you want to ${action}:`,
-      choices: this.memos.map((memo) => ({ name: memo, message: memo.title })),
+      choices: this.memos.map((memo) => memo.title),
     };
     const answer = await Enquirer.prompt(question);
-    return answer.memo;
+    return this.memos.find((memo) => memo.title === answer.title);
   }
 
   #memosEmpty() {
