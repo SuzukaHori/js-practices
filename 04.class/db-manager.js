@@ -25,9 +25,17 @@ export class DbManager {
     return new Memo(result.lastID, title, content);
   }
 
-  async delete(memo) {
-    await this.#run("DELETE FROM memos WHERE id = ?", memo.id);
-    return memo;
+  async delete(id, title, content) {
+    await this.#run("DELETE FROM memos WHERE id = ?", id);
+    return  new Memo(id, title, content)
+  }
+
+  async update(id, title, content) {
+    await this.#run(
+      "UPDATE memos SET title = $title, content = $content WHERE id = $id",
+      { $title: title, $content: content, $id:id }
+    );
+    return new Memo(id, title, content)
   }
 
   #run(sql, params = []) {

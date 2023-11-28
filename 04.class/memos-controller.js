@@ -1,8 +1,11 @@
 import Enquirer from "enquirer";
+import { exec } from "node:child_process";
+import fs from "fs";
 
 export class MemosController {
   constructor(dbManager) {
     this.dbManager = dbManager;
+    this.tempFilePath = "./temp.txt";
   }
 
   async index() {
@@ -57,6 +60,27 @@ export class MemosController {
     console.log(`Memo "${destroyedMemo.title}" destroyed.`);
   }
 
+  async edit() {
+    await this.#setMemos();
+    if (this.#memosEmpty()) {
+      console.log("Memo does not exist.");
+      return;
+    }
+    const selectedMemo = await this.#select("update");
+    try {
+      const editedData = await this.#editMemoInEditor(selectedMemo);
+      const updatedMemo = await this.dbManager.update(
+        selectedMemo.id,
+        editedData.title,
+        editedData.content
+      );
+      console.log(`Memo "${updatedMemo.title}" updated.`);
+    } catch (error) {
+      console.error("Failed to update memo.");
+      throw error;
+    }
+  }
+
   async #setMemos() {
     try {
       this.memos = await this.dbManager.getAll();
@@ -79,5 +103,36 @@ export class MemosController {
 
   #memosEmpty() {
     return this.memos.length === 0;
+  }
+
+  async #editMemoInEditor(selectedMemo) {
+    fs.writeFileSync(this.tempFilePath, selectedMemo.fullText());
+    await this.#openEditor();
+    const dataByLine = fs.readFileSync(this.tempFilePath, "utf-8").split("\n");
+    const title = dataByLine[0];
+    const content = dataByLine.slice(1).join("\n");
+    return { title: title, content: content };
+  }
+
+  async #openEditor() {
+    const editor = process.env.EDITOR || "vi";
+    let command;
+    if (editor === "vi") {
+      command = `vi ${this.tempFilePath}`; // !!!!ここでvimが立ち上がらない!!!!
+    } else {
+      command = `${editor} ${this.tempFilePath} --wait`;
+    }
+    await this.#execCommand(command);
+  }
+
+  #execCommand(command) {
+    return new Promise((resolve, reject) => {
+      exec(command, (error, stdout) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(stdout);
+      });
+    });
   }
 }

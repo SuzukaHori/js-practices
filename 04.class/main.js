@@ -17,6 +17,8 @@ async function main() {
     memosController.read();
   } else if (option.d) {
     memosController.destroy();
+  } else if (option.e) {
+    memosController.edit();
   } else {
     const lines = await readLinesFromInput();
     const title = lines[0];
