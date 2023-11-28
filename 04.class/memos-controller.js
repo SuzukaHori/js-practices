@@ -116,11 +116,9 @@ export class MemosController {
 
   async #openEditor() {
     const editor = process.env.EDITOR || "vi";
-    let command;
-    if (editor === "vi") {
-      command = `vi ${this.tempFilePath}`; // !!!!ここでvimが立ち上がらない!!!!
-    } else {
-      command = `${editor} ${this.tempFilePath} --wait`;
+    let command = `${editor} ${this.tempFilePath}`;
+    if (editor !== "vi") {
+      command += " --wait";
     }
     await this.#execCommand(command);
   }
