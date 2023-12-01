@@ -1,32 +1,30 @@
 import { DbManager } from "./db-manager.js";
 
 export class Memo {
+  static dbManager = new DbManager();
+
   constructor(title, content, id = null) {
     this.id = id;
     this.title = title;
     this.content = content;
-    this.dbManager = new DbManager();
   }
 
   async save() {
-    await Memo.#setDb(this.dbManager);
-    const memo = await this.dbManager.insert(this.title, this.content);
+    await Memo.dbManager.createTable();
+    const memo = await Memo.dbManager.insert(this.title, this.content);
     return new Memo(memo.title, memo.content, memo.id);
   }
 
   async destroy() {
-    this.dbManager = new DbManager();
-    await Memo.#setDb(this.dbManager);
-    const destroyedMemo = await this.dbManager.delete(this);
+    await Memo.dbManager.createTable();
+    const destroyedMemo = await Memo.dbManager.delete(this);
     return destroyedMemo;
   }
 
   async update(title, content) {
-    this.dbManager = new DbManager();
-    await Memo.#setDb(this.dbManager);
-
-    const updated = await this.dbManager.update(title, content, this.id);
-    return new Memo(updated.title, updated.content, updated.id)
+    await Memo.dbManager.createTable();
+    const updated = await Memo.dbManager.update(title, content, this.id);
+    return new Memo(updated.title, updated.content, updated.id);
   }
 
   static async findByTitle(title) {
@@ -35,17 +33,12 @@ export class Memo {
   }
 
   static async findAll() {
-    this.dbManager = new DbManager();
-    await Memo.#setDb(this.dbManager);
-    const memos = await this.dbManager.getAll();
+    await Memo.dbManager.createTable();
+    const memos = await Memo.dbManager.getAll();
     return memos.map((memo) => new Memo(memo.title, memo.content, memo.id));
   }
 
   fullText() {
     return this.title + "\n" + this.content;
-  }
-
-  static async #setDb(dbManager) {
-    await dbManager.createTable();
   }
 }

@@ -36,7 +36,7 @@ export class MemosController {
       console.log("Memo does not exist.");
       return;
     }
-    const selectedMemo = await this.#select("see");
+    const selectedMemo = await this.#selectMemo("see");
     console.log(selectedMemo.fullText());
   }
 
@@ -46,7 +46,7 @@ export class MemosController {
       console.log("Memo does not exist.");
       return;
     }
-    const selectedMemo = await this.#select("destroy");
+    const selectedMemo = await this.#selectMemo("destroy");
     let destroyedMemo;
     try {
       destroyedMemo = await selectedMemo.destroy();
@@ -63,41 +63,18 @@ export class MemosController {
       console.log("Memo does not exist.");
       return;
     }
-    const oldMemo = await this.#select("edit");
+    const oldMemo = await this.#selectMemo("edit");
     try {
       fs.writeFileSync(tempFilePath, oldMemo.fullText());
-      console.log("エディタで編集し、保存して閉じください");
-      await this.openEditor(editor, tempFilePath);
-      const newData = await this.readEditedFile(tempFilePath);
+      console.log("Edit in the editor, save and close.");
+      await this.#openEditor(editor, tempFilePath);
+      const newData = await this.#readEditedFile(tempFilePath);
       const newMemo = await oldMemo.update(newData.title, newData.content);
       console.log(`Memo "${newMemo.title}" updated.`);
     } catch (error) {
       console.error("Failed to update memo.");
       throw error;
     }
-  }
-
-  async readEditedFile(tempFilePath) {
-    const dataByLine = fs.readFileSync(tempFilePath, "utf-8").split("\n");
-    const title = dataByLine[0];
-    const content = dataByLine.slice(1).join("\n");
-    return { title: title, content: content };
-  }
-
-  async openEditor(editor, tempFilePath) {
-    let option;
-    if (editor !== "vi") {
-      option = "--wait";
-    }
-
-    return new Promise((resolve) => {
-      const child = spawn(editor, [tempFilePath, option], {
-        stdio: "inherit",
-      });
-      child.on("exit", (code) => {
-        resolve(code);
-      });
-    });
   }
 
   async #setMemos() {
@@ -109,7 +86,7 @@ export class MemosController {
     }
   }
 
-  async #select(action) {
+  async #selectMemo(action) {
     const question = {
       name: "title",
       type: "select",
@@ -118,5 +95,24 @@ export class MemosController {
     };
     const answer = await Enquirer.prompt(question);
     return Memo.findByTitle(answer.title);
+  }
+
+  async #readEditedFile(tempFilePath) {
+    const dataByLine = fs.readFileSync(tempFilePath, "utf-8").split("\n");
+    const title = dataByLine[0];
+    const content = dataByLine.slice(1).join("\n");
+    return { title: title, content: content };
+  }
+
+  async #openEditor(editor, tempFilePath) {
+    const args = editor === "vi" ? [tempFilePath] : [tempFilePath, "--wait"];
+    return new Promise((resolve) => {
+      const child = spawn(editor, args, {
+        stdio: "inherit",
+      });
+      child.on("exit", () => {
+        resolve();
+      });
+    });
   }
 }
