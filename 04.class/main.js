@@ -3,13 +3,10 @@
 import minimist from "minimist";
 import readline from "readline";
 import { MemosController } from "./memos-controller.js";
-import { DbManager } from "./db-manager.js";
 
 async function main() {
   const option = minimist(process.argv.slice(2));
-  const dbManager = new DbManager();
-  await dbManager.createTable();
-  const memosController = new MemosController(dbManager);
+  const memosController = new MemosController();
 
   if (option.l) {
     memosController.index();

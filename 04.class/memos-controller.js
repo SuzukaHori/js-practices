@@ -1,13 +1,10 @@
 import Enquirer from "enquirer";
+import { Memo } from "./memo.js";
 
 export class MemosController {
-  constructor(dbManager) {
-    this.dbManager = dbManager;
-  }
-
   async index() {
     await this.#setMemos();
-    if (this.#memosEmpty()) {
+    if (Memo.empty(this.memos)) {
       console.log("Memo does not exist.");
       return;
     }
@@ -19,7 +16,8 @@ export class MemosController {
   async create(title, content) {
     let insertedMemo;
     try {
-      insertedMemo = await this.dbManager.insert(title, content);
+      const memo = new Memo(title, content);
+      insertedMemo = await memo.save();
     } catch (error) {
       if (error instanceof Error && error.code === "SQLITE_CONSTRAINT") {
         console.error("The first line of a memo must be unique.");
@@ -32,7 +30,7 @@ export class MemosController {
 
   async read() {
     await this.#setMemos();
-    if (this.#memosEmpty()) {
+    if (Memo.empty(this.memos)) {
       console.log("Memo does not exist.");
       return;
     }
@@ -42,14 +40,14 @@ export class MemosController {
 
   async destroy() {
     await this.#setMemos();
-    if (this.#memosEmpty()) {
+    if (Memo.empty(this.memos)) {
       console.log("Memo does not exist.");
       return;
     }
     const selectedMemo = await this.#select("destroy");
     let destroyedMemo;
     try {
-      destroyedMemo = await this.dbManager.delete(selectedMemo);
+      destroyedMemo = await selectedMemo.destroy();
     } catch (error) {
       console.error("Failed to delete memo.");
       throw error;
@@ -59,7 +57,7 @@ export class MemosController {
 
   async #setMemos() {
     try {
-      this.memos = await this.dbManager.getAll();
+      this.memos = await Memo.findAll();
     } catch (error) {
       console.error("Failed to get memos.");
       throw error;
@@ -74,10 +72,6 @@ export class MemosController {
       choices: this.memos.map((memo) => memo.title),
     };
     const answer = await Enquirer.prompt(question);
-    return this.memos.find((memo) => memo.title === answer.title);
-  }
-
-  #memosEmpty() {
-    return this.memos.length === 0;
+    return Memo.findByTitle(answer.title);
   }
 }

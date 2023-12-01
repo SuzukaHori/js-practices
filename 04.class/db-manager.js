@@ -1,5 +1,5 @@
 import sqlite3 from "sqlite3";
-import { Memo } from "./memo.js";
+// import { Memo } from "./memo.js";
 
 export class DbManager {
   constructor() {
@@ -14,7 +14,7 @@ export class DbManager {
 
   async getAll() {
     const memos = await this.#all("SELECT * FROM memos");
-    return memos.map((memo) => new Memo(memo.id, memo.title, memo.content));
+    return memos;
   }
 
   async insert(title, content) {
@@ -22,7 +22,7 @@ export class DbManager {
       "INSERT INTO memos (title, content) VALUES ($title, $content)",
       { $title: title, $content: content }
     );
-    return new Memo(result.lastID, title, content);
+    return { id: result.lastID, title, content };
   }
 
   async delete(memo) {
