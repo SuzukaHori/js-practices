@@ -1,10 +1,12 @@
 import Enquirer from "enquirer";
 import { Memo } from "./memo.js";
+import { spawn } from "node:child_process";
+import fs from "fs";
 
 export class MemosController {
   async index() {
     await this.#setMemos();
-    if (Memo.empty(this.memos)) {
+    if (this.memos.length === 0) {
       console.log("Memo does not exist.");
       return;
     }
@@ -30,7 +32,7 @@ export class MemosController {
 
   async read() {
     await this.#setMemos();
-    if (Memo.empty(this.memos)) {
+    if (this.memos.length === 0) {
       console.log("Memo does not exist.");
       return;
     }
@@ -40,7 +42,7 @@ export class MemosController {
 
   async destroy() {
     await this.#setMemos();
-    if (Memo.empty(this.memos)) {
+    if (this.memos.length === 0) {
       console.log("Memo does not exist.");
       return;
     }
@@ -53,6 +55,49 @@ export class MemosController {
       throw error;
     }
     console.log(`Memo "${destroyedMemo.title}" destroyed.`);
+  }
+
+  async edit(editor, tempFilePath) {
+    await this.#setMemos();
+    if (this.memos.length === 0) {
+      console.log("Memo does not exist.");
+      return;
+    }
+    const oldMemo = await this.#select("edit");
+    try {
+      fs.writeFileSync(tempFilePath, oldMemo.fullText());
+      console.log("エディタで編集し、保存して閉じください");
+      await this.openEditor(editor, tempFilePath);
+      const newData = await this.readEditedFile(tempFilePath);
+      const newMemo = await oldMemo.update(newData.title, newData.content);
+      console.log(`Memo "${newMemo.title}" updated.`);
+    } catch (error) {
+      console.error("Failed to update memo.");
+      throw error;
+    }
+  }
+
+  async readEditedFile(tempFilePath) {
+    const dataByLine = fs.readFileSync(tempFilePath, "utf-8").split("\n");
+    const title = dataByLine[0];
+    const content = dataByLine.slice(1).join("\n");
+    return { title: title, content: content };
+  }
+
+  async openEditor(editor, tempFilePath) {
+    let option;
+    if (editor !== "vi") {
+      option = "--wait";
+    }
+
+    return new Promise((resolve) => {
+      const child = spawn(editor, [tempFilePath, option], {
+        stdio: "inherit",
+      });
+      child.on("exit", (code) => {
+        resolve(code);
+      });
+    });
   }
 
   async #setMemos() {

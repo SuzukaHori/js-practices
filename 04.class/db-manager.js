@@ -1,5 +1,4 @@
 import sqlite3 from "sqlite3";
-// import { Memo } from "./memo.js";
 
 export class DbManager {
   constructor() {
@@ -28,6 +27,14 @@ export class DbManager {
   async delete(memo) {
     await this.#run("DELETE FROM memos WHERE id = ?", memo.id);
     return memo;
+  }
+
+  async update(title, content, id) {
+    await this.#run(
+      "UPDATE memos SET title = $title, content = $content WHERE id = $id",
+      { $title: title, $content: content, $id: id }
+    );
+    return { id: id, title: title, content: content };
   }
 
   #run(sql, params = []) {

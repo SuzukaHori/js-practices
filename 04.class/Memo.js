@@ -21,8 +21,16 @@ export class Memo {
     return destroyedMemo;
   }
 
+  async update(title, content) {
+    this.dbManager = new DbManager();
+    await Memo.#setDb(this.dbManager);
+
+    const updated = await this.dbManager.update(title, content, this.id);
+    return new Memo(updated.title, updated.content, updated.id)
+  }
+
   static async findByTitle(title) {
-    const memos = await Memo.findAll()
+    const memos = await Memo.findAll();
     return memos.find((memo) => memo.title === title);
   }
 
@@ -35,10 +43,6 @@ export class Memo {
 
   fullText() {
     return this.title + "\n" + this.content;
-  }
-
-  static empty(memos){
-    return memos.length === 0;
   }
 
   static async #setDb(dbManager) {
