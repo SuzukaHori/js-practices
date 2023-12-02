@@ -67,7 +67,7 @@ export class MemosController {
     try {
       fs.writeFileSync(tempFilePath, oldMemo.fullText());
       console.log("Edit in the editor, save and close.");
-      await this.#openEditor(editor, tempFilePath);
+      await this.#launchEditor(editor, tempFilePath);
       const newData = await this.#readEditedFile(tempFilePath);
       const newMemo = await oldMemo.update(newData.title, newData.content);
       console.log(`Memo "${newMemo.title}" updated.`);
@@ -104,7 +104,7 @@ export class MemosController {
     return { title: title, content: content };
   }
 
-  async #openEditor(editor, tempFilePath) {
+  async #launchEditor(editor, tempFilePath) {
     const args = editor === "vi" ? [tempFilePath] : [tempFilePath, "--wait"];
     return new Promise((resolve) => {
       const child = spawn(editor, args, {

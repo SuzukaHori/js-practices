@@ -11,14 +11,14 @@ export class Memo {
 
   async save() {
     await Memo.dbManager.createTable();
-    const memo = await Memo.dbManager.insert(this.title, this.content);
-    return new Memo(memo.title, memo.content, memo.id);
+    await Memo.dbManager.insert(this.title, this.content);
+    return this;
   }
 
   async destroy() {
     await Memo.dbManager.createTable();
-    const destroyedMemo = await Memo.dbManager.delete(this);
-    return destroyedMemo;
+    await Memo.dbManager.delete(this.id);
+    return this;
   }
 
   async update(title, content) {
