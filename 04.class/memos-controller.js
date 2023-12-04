@@ -105,7 +105,7 @@ export class MemosController {
   }
 
   async #launchEditor(editor, tempFilePath) {
-    const args = editor === "vi" ? [tempFilePath] : [tempFilePath, "--wait"];
+    const args = editor === "code" ? [tempFilePath, "--wait"] : [tempFilePath];
     return new Promise((resolve) => {
       const child = spawn(editor, args, {
         stdio: "inherit",
