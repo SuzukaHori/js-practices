@@ -11,19 +11,25 @@ export class Memo {
 
   async save() {
     await Memo.dbManager.createTable();
-    await Memo.dbManager.insert(this.title, this.content);
+    await Memo.dbManager.run(
+      "INSERT INTO memos (title, content) VALUES ($title, $content)",
+      { $title: this.title, $content: this.content }
+    );
     return this;
   }
 
   async destroy() {
     await Memo.dbManager.createTable();
-    await Memo.dbManager.delete(this.id);
+    await Memo.dbManager.run("DELETE FROM memos WHERE id = ?", this.id);
     return this;
   }
 
   async update(title, content) {
     await Memo.dbManager.createTable();
-    const updated = await Memo.dbManager.update(title, content, this.id);
+    const updated = await Memo.dbManager.run(
+      "UPDATE memos SET title = $title, content = $content WHERE id = $id",
+      { $title: title, $content: content, $id: this.id }
+    );
     return new Memo(updated.title, updated.content, updated.id);
   }
 
@@ -34,7 +40,7 @@ export class Memo {
 
   static async findAll() {
     await Memo.dbManager.createTable();
-    const memos = await Memo.dbManager.getAll();
+    const memos = await Memo.dbManager.all("SELECT * FROM memos")
     return memos.map((memo) => new Memo(memo.title, memo.content, memo.id));
   }
 
