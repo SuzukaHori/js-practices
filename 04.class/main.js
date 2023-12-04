@@ -16,8 +16,7 @@ async function main() {
     memosController.destroy();
   } else if (option.e) {
     const editor = process.env.EDITOR || "vi";
-    const tempFilePath = "./temp.txt";
-    memosController.edit(editor, tempFilePath);
+    memosController.edit(editor);
   } else {
     const lines = await readLinesFromInput();
     const title = lines[0];

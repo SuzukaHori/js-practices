@@ -2,6 +2,7 @@ import Enquirer from "enquirer";
 import { Memo } from "./memo.js";
 import { spawn } from "node:child_process";
 import fs from "fs";
+import tmp from "tmp";
 
 export class MemosController {
   async index() {
@@ -57,7 +58,7 @@ export class MemosController {
     console.log(`Memo "${destroyedMemo.title}" destroyed.`);
   }
 
-  async edit(editor, tempFilePath) {
+  async edit(editor) {
     await this.#setMemos();
     if (this.memos.length === 0) {
       console.log("Memo does not exist.");
@@ -65,10 +66,11 @@ export class MemosController {
     }
     const oldMemo = await this.#selectMemo("edit");
     try {
-      fs.writeFileSync(tempFilePath, oldMemo.fullText());
+      const tempFile = tmp.fileSync();
+      fs.writeFileSync(tempFile.name, oldMemo.fullText());
       console.log("Edit in the editor, save and close.");
-      await this.#launchEditor(editor, tempFilePath);
-      const newData = await this.#readEditedFile(tempFilePath);
+      await this.#launchEditor(editor, tempFile.name);
+      const newData = await this.#readEditedFile(tempFile.name);
       const newMemo = await oldMemo.update(newData.title, newData.content);
       console.log(`Memo "${newMemo.title}" updated.`);
     } catch (error) {
