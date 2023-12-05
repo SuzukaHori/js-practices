@@ -30,7 +30,7 @@ export class Memo {
       "UPDATE memos SET title = $title, content = $content WHERE id = $id",
       { $title: title, $content: content, $id: this.id }
     );
-    return new Memo(updated.title, updated.content, updated.id);
+    return new Memo(title, content, updated.lastID);
   }
 
   static async findByTitle(title) {
