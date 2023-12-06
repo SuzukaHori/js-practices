@@ -4,9 +4,14 @@
     "lint": "prettier --check . && eslint ."
   },
   "devDependencies": {
-    "eslint": "^8.43.0",
     "eslint-config-prettier": "^8.8.0",
     "prettier": "^2.8.8"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "enquirer": "^2.4.1",
+    "minimist": "^1.2.8",
+    "sqlite3": "^5.1.6",
+    "tmp": "^0.2.1"
+  }
 }
